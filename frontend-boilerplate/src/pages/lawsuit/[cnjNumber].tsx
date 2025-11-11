@@ -7,28 +7,38 @@ import { Text } from "@radix-ui/themes";
 import { Header, SearchBar, MovementSession, PartySession, DetailSession, LawyerSession, LawsuitHeader, OfferModal } from "@/components";
 import { useExperiment } from "@/hooks/useExperiment";
 import { useNextPlanModal } from "@/hooks/useNextPlanModal";
-import { GET_LAWSUIT_BY_NUMBER_QUERY } from "@/graphql/queries/lawsuit";
+import { GET_LAWSUIT_BY_NUMBER_QUERY, SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
 import { stripMarkTags } from "@/utils/highlight";
 import styles from "@/styles/LawsuitDetail.module.css";
 
 export default function LawsuitDetailPage() {
   const router = useRouter();
-  const { cnjNumber } = router.query;
+  const { cnjNumber, q } = router.query;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovementId, setSelectedMovementId] = useState<string>("");
 
   const cnjRaw = typeof cnjNumber === "string" ? decodeURIComponent(cnjNumber) : "";
   const cnj = stripMarkTags(cnjRaw);
+  const originalQuery = typeof q === "string" ? q : null;
 
-  const { data, loading, error } = useQuery(GET_LAWSUIT_BY_NUMBER_QUERY, {
-    variables: { number: cnj },
+  // Use SEARCH_LAWSUITS_QUERY if we have original query (to preserve highlights)
+  // Otherwise use GET_LAWSUIT_BY_NUMBER_QUERY (direct CNJ search)
+  const queryToUse = originalQuery ? SEARCH_LAWSUITS_QUERY : GET_LAWSUIT_BY_NUMBER_QUERY;
+  const queryVariables = originalQuery
+    ? { query: originalQuery, number: cnj }
+    : { number: cnj };
+
+  const { data, loading, error } = useQuery(queryToUse, {
+    variables: queryVariables,
     skip: !cnj,
   });
 
   const { shouldBlockLastMovement, loading: experimentLoading } = useExperiment();
   const { modalData, loading: modalLoading } = useNextPlanModal();
 
-  const lawsuit = data?.searchLawsuitsQuery?.[0] || null;
+  const lawsuit = originalQuery
+    ? (data?.searchLawsuitsQuery || []).find((l) => stripMarkTags(l.number) === cnj) || null
+    : data?.searchLawsuitsQuery?.[0] || null;
 
   const handleSearch = (searchCnj: string, court: "ALL" | "TJAL" | "TJCE") => {
     const query: { q?: string; court?: string } = {};

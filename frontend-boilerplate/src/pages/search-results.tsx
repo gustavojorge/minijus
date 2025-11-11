@@ -59,7 +59,7 @@ export default function SearchResultsPage() {
           {showNotFound && <NotFoundSection />}
 
           {hasResults && (
-            <LawsuitsSearchSession lawsuits={lawsuits} />
+            <LawsuitsSearchSession lawsuits={lawsuits} originalQuery={searchQuery} />
           )}
         </main>
       </div>

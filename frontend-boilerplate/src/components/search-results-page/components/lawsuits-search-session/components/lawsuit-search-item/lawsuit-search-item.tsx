@@ -8,9 +8,18 @@ import styles from "./lawsuit-search-item.module.css";
 
 interface LawsuitSearchItemProps {
   lawsuit: Lawsuit;
+  originalQuery?: string;
 }
 
-export function LawsuitSearchItem({ lawsuit }: LawsuitSearchItemProps) {
+export function LawsuitSearchItem({ lawsuit, originalQuery }: LawsuitSearchItemProps) {
+  const getDetailUrl = () => {
+    const baseUrl = `/lawsuit/${encodeURIComponent(stripMarkTags(lawsuit.number))}`;
+    if (originalQuery) {
+      return `${baseUrl}?q=${encodeURIComponent(originalQuery)}`;
+    }
+    return baseUrl;
+  };
+
   return (
     <Card className={styles.card} role="listitem">
       <div className={styles.cardContent}>
@@ -58,7 +67,7 @@ export function LawsuitSearchItem({ lawsuit }: LawsuitSearchItemProps) {
           className={styles.viewButton}
         >
           <Link
-            href={`/lawsuit/${encodeURIComponent(stripMarkTags(lawsuit.number))}`}
+            href={getDetailUrl()}
             aria-label={`Ver detalhes do processo ${stripMarkTags(lawsuit.number)}`}
           >
             Ver Detalhes

@@ -1,3 +1,5 @@
+import re
+
 from searcher.config.settings import client, INDEX_NAME
 from searcher.models.response_models import ResponseModel, Lawsuit, RelatedPerson, Lawyer, Activity
 from searcher.service.builders.query_builder import build_query
@@ -34,14 +36,37 @@ def search_in_elastic(request) -> ResponseModel:
         highlights = hit.get("highlight", {})
 
         def get_highlight(field, default=""):
-            return highlights.get(field, [default])[0]
+            highlight_list = highlights.get(field, [])
+            return highlight_list[0] if highlight_list else default
 
+        def find_matching_highlight(highlight_list, original_text):
+            if not original_text or not highlight_list:
+                return None
+            
+            for highlight in highlight_list:
+                highlight_text = re.sub(r'<mark>(.*?)</mark>', r'\1', highlight)
+                if highlight_text.strip() == original_text.strip():
+                    return highlight
+            return highlight_list[0] if highlight_list else None
+
+        related_people_highlights = highlights.get("related_people.name", [])
+        
         related_people = [
-            RelatedPerson(name=p.get("name", ""), role=p.get("role", ""))
+            RelatedPerson(
+                name=find_matching_highlight(related_people_highlights, p.get("name", "")) or p.get("name", ""),
+                role=p.get("role", "")
+            )
             for p in src.get("related_people", [])
         ]
 
-        lawyers = [Lawyer(name=l.get("name", "")) for l in src.get("lawyers", [])]
+        lawyers_highlights = highlights.get("lawyers.name", [])
+        
+        lawyers = [
+            Lawyer(
+                name=find_matching_highlight(lawyers_highlights, l.get("name", "")) or l.get("name", "")
+            )
+            for l in src.get("lawyers", [])
+        ]
         
         activities = [
             Activity(
