@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PartySession /> should render parties list 1`] = `
+<div
+  class="partySession"
+>
+  <div
+    class="sectionHeader"
+  >
+    <span
+      class="rt-Text rt-r-size-4 rt-r-weight-bold"
+    >
+      Partes envolvidas
+    </span>
+  </div>
+  <div
+    class="partiesList"
+  >
+    <div
+      data-testid="party-item"
+    >
+      João Silva
+       - 
+      Autor
+    </div>
+    <div
+      data-testid="party-item"
+    >
+      Maria Santos
+       - 
+      Réu
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MovementSession /> should render movements list 1`] = `
+<div
+  class="movementSession"
+>
+  <div
+    class="sectionHeader"
+  >
+    <span
+      class="rt-Text rt-r-size-4 rt-r-weight-bold"
+    >
+      Movimentações
+    </span>
+  </div>
+  <div
+    class="movementsList"
+  >
+    <div
+      data-testid="movement-item"
+    >
+      <span>
+        2020-01-15
+      </span>
+      <span>
+        Distribuição
+      </span>
+    </div>
+    <div
+      data-testid="movement-item"
+    >
+      <span>
+        2020-02-20
+      </span>
+      <span>
+        Citação do réu
+      </span>
+    </div>
+    <div
+      data-testid="movement-item"
+    >
+      <span>
+        2020-03-10
+      </span>
+      <span>
+        Resposta do réu
+      </span>
+    </div>
+  </div>
+</div>
+`;

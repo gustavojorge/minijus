@@ -1,0 +1,36 @@
+.searchInput {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: #111827;
+  outline: none;
+  border-radius: 9999px;
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+@media (min-width: 768px) {
+  .searchInput {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .searchInput {
+    padding: 1rem 1.5rem;
+    font-size: 1.0625rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .searchInput {
+    padding: 1.125rem 1.75rem;
+  }
+}
+

@@ -1,0 +1,33 @@
+.features {
+  margin-top: 4rem;
+  padding: 2rem 0;
+}
+
+.featuresGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .features {
+    margin-top: 4rem;
+  }
+
+  .featuresGrid {
+    flex-direction: row;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuresGrid {
+    gap: 3rem;
+  }
+}
+

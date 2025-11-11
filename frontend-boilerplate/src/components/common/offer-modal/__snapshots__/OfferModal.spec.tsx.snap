@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<OfferModal /> should render modal content when open 1`] = `null`;

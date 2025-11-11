@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NotFoundSection /> should render not found message and image 1`] = `
+<div
+  class="notFoundContainer"
+>
+  <p
+    class="notFoundText"
+  >
+    Processo não encontrado
+  </p>
+  <img
+    alt="Nenhum resultado encontrado"
+    class="notFoundImage"
+    height="300"
+    src="/not_found.png"
+    width="400"
+  />
+</div>
+`;

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DetailItem /> should render label and value 1`] = `
+<div
+  class="detailItem"
+>
+  <span
+    class="rt-Text rt-r-size-3"
+    data-accent-color="gray"
+  >
+    Tribunal
+  </span>
+  <span
+    class="rt-Text rt-r-size-3 rt-r-weight-medium"
+  >
+    TJAL
+  </span>
+</div>
+`;

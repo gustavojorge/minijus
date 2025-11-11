@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PriceSession /> should render price information 1`] = `
+<div
+  class="pricingSection"
+>
+  <p
+    class="priceLabel"
+  >
+    de 
+    <span
+      class="originalPrice"
+    >
+      R$ 49,90
+    </span>
+     por:
+  </p>
+  <p
+    class="discountedPrice"
+  >
+    R$ 29,90
+  </p>
+  <p
+    class="pricePeriod"
+  >
+    por mês
+  </p>
+</div>
+`;

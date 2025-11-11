@@ -1,0 +1,32 @@
+.pricingSection {
+  text-align: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.priceLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 0.5rem;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.discountedPrice {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0.5rem 0;
+  line-height: 1;
+}
+
+.pricePeriod {
+  font-size: 0.9375rem;
+  color: #374151;
+  margin: 0.5rem 0 0;
+}
+

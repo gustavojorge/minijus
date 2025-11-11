@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MovementItem /> should render blocked content when isBlocked is true 1`] = `
+<div
+  class="movementItem blocked"
+>
+  <span
+    class="rt-Text rt-r-size-2 rt-r-weight-medium movementDate"
+    data-accent-color="gray"
+  >
+    14/01/2020
+  </span>
+  <div
+    class="blockedContent"
+  >
+    <span
+      class="rt-Text rt-r-size-3 blockedMessage"
+    >
+      Para ver informações mais atualizadas deste processo, assine agora.
+    </span>
+    <span
+      class="rt-Text rt-r-size-2 rt-r-weight-medium blockedCta"
+    >
+      Clique para ver oferta
+    </span>
+  </div>
+</div>
+`;
+
+exports[`<MovementItem /> should render movement with date and description 1`] = `
+<div
+  class="movementItem "
+>
+  <span
+    class="rt-Text rt-r-size-2 rt-r-weight-medium movementDate"
+    data-accent-color="gray"
+  >
+    14/01/2020
+  </span>
+  <span
+    class="rt-Text rt-r-size-3 movementDescription"
+  >
+    Distribuição do processo
+  </span>
+</div>
+`;

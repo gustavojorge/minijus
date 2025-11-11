@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LawsuitsSearchSession /> should render lawsuits list 1`] = `
+<section
+  aria-label="Resultados da busca"
+  class="container"
+>
+  <h2
+    class="title"
+  >
+    2
+     processo
+    s
+     encontrado
+    s
+  </h2>
+  <div
+    class="resultsList"
+    role="list"
+  >
+    <div
+      data-testid="lawsuit-item-1"
+    >
+      5001682-88.2020.8.13.0672
+    </div>
+    <div
+      data-testid="lawsuit-item-2"
+    >
+      1234567-89.2021.8.06.0001
+    </div>
+  </div>
+</section>
+`;

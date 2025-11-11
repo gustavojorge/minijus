@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FeatureItem /> should render feature with icon and description 1`] = `
+<article
+  aria-label="Test feature description"
+  class="card"
+>
+  <div
+    aria-hidden="true"
+    class="iconContainer"
+  >
+    <span
+      data-testid="icon"
+    >
+      Icon
+    </span>
+  </div>
+  <p
+    class="description"
+  >
+    Test feature description
+  </p>
+</article>
+`;

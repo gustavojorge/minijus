@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<InputSearchBar /> should be disabled when disabled prop is true 1`] = `
+<input
+  aria-label="Campo de busca de processos"
+  class="searchInput"
+  disabled=""
+  placeholder="Digite um número de processo (CNJ)"
+  type="text"
+  value=""
+/>
+`;

@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LawsuitSearchItem /> should render lawsuit information 1`] = `
+<div
+  class="rt-reset rt-BaseCard rt-Card rt-r-size-1 rt-variant-surface card"
+  role="listitem"
+>
+  <div
+    class="cardContent"
+  >
+    <div
+      class="cardHeader"
+    >
+      <span
+        class="rt-Text rt-r-size-4 rt-r-weight-bold"
+      >
+        5001682-88.2020.8.13.0672
+      </span>
+      <span
+        class="rt-Text rt-r-size-2 court"
+        data-accent-color="gray"
+      >
+        TJAL
+      </span>
+    </div>
+    <div
+      class="parties"
+    >
+      <span
+        class="rt-Text rt-r-size-3"
+        data-accent-color="gray"
+      >
+        João Silva (Autor) x Maria Santos (Réu)
+      </span>
+    </div>
+    <div
+      class="metadata"
+    >
+      <span
+        class="rt-Text rt-r-size-1"
+        data-accent-color="gray"
+      >
+        Início: 
+        14/01/2020
+      </span>
+      <span
+        class="rt-Text rt-r-size-1"
+        data-accent-color="gray"
+      >
+        2
+         movimentação
+        ões
+      </span>
+    </div>
+    <a
+      aria-label="Ver detalhes do processo 5001682-88.2020.8.13.0672"
+      class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-outline rt-Button viewButton"
+      data-accent-color="jade"
+      href="/lawsuit/5001682-88.2020.8.13.0672"
+    >
+      Ver Detalhes
+    </a>
+  </div>
+</div>
+`;

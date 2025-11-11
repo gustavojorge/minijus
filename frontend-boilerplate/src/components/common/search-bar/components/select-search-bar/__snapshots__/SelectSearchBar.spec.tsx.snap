@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SelectSearchBar /> should render select with all options 1`] = `
+<select
+  aria-label="Filtrar por tribunal"
+  class="courtSelect"
+>
+  <option
+    value="ALL"
+  >
+    Tribunal
+  </option>
+  <option
+    value="TJAL"
+  >
+    TJAL
+  </option>
+  <option
+    value="TJCE"
+  >
+    TJCE
+  </option>
+</select>
+`;

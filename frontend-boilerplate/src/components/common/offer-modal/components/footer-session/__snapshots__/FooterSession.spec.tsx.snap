@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FooterSession /> should render footer text 1`] = `
+<p
+  class="footerText"
+>
+  Footer text test
+</p>
+`;

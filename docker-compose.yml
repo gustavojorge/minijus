@@ -1,5 +1,7 @@
-version: '3.7'
+version: '3.8'
+
 services:
+  # Infrastructure services
   elasticsearch:
     image: elasticsearch:8.15.2
     container_name: elasticsearch
@@ -17,6 +19,8 @@ services:
       timeout: 5s
       retries: 6
       start_period: 20s
+    networks:
+      - app-network
 
   kibana:
     image: kibana:8.15.2
@@ -25,6 +29,10 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
       - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
 
   postgres:
     image: postgres:16
@@ -43,6 +51,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
+    networks:
+      - app-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -54,7 +64,10 @@ services:
       - 8080:80
     depends_on:
       - postgres
+    networks:
+      - app-network
 
+  # Backend services (searcher project)
   indexer-api:
     build: ./indexer
     container_name: indexer-api
@@ -78,6 +91,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./indexer/logs:/app/logs
+    networks:
+      - app-network
 
   searcher-api:
     build: ./searcher
@@ -92,7 +107,64 @@ services:
     restart: unless-stopped
     volumes:
       - ./searcher/logs:/app/logs
+    networks:
+      - app-network
+
+  # Backend services (vertical-product project)
+  mock-api:
+    build:
+      context: ./mock-api
+      dockerfile: Dockerfile
+    container_name: mock-api
+    ports:
+      - "9777:9777"
+    volumes:
+      - ./mock-api:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app-network
+
+  backend-graphql:
+    build:
+      context: ./backend-graphql
+      dockerfile: Dockerfile
+    container_name: backend-graphql
+    ports:
+      - "4000:4000"
+    environment:
+      - EXTERNAL_API_BASE_URL=http://mock-api:9777
+      - SEARCHER_API_BASE_URL=http://searcher-api:8000
+    volumes:
+      - ./backend-graphql:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mock-api
+      - searcher-api
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend-boilerplate
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000
+    volumes:
+      - ./frontend-boilerplate:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    depends_on:
+      - backend-graphql
+    networks:
+      - app-network
 
 volumes:
   esdata:
+
+networks:
+  app-network:
+    driver: bridge
 

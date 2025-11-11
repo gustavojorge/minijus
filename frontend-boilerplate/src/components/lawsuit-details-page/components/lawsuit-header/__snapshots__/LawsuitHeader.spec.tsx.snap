@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LawsuitHeader /> should render lawsuit header with number, court and date 1`] = `
+<div
+  class="headerSection"
+>
+  <h1
+    class="title"
+  >
+    Processo n. 
+    5001682-88.2020.8.13.0672
+     do 
+    TJAL
+  </h1>
+  <span
+    class="rt-Text rt-r-size-3 date"
+    data-accent-color="gray"
+  >
+    Distribuído em 
+    14/01/2020
+  </span>
+</div>
+`;

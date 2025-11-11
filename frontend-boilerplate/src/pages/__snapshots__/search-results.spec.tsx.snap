@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchResults Page should render search results when data is loaded 1`] = `
+<div
+  class="page"
+>
+  <div
+    data-testid="header"
+  >
+    Header
+  </div>
+  <main
+    class="main"
+    role="main"
+  >
+    <button
+      data-testid="back-button"
+    >
+      Voltar
+    </button>
+    <div
+      data-testid="lawsuits-session"
+    >
+      <div>
+        5001682-88.2020.8.13.0672
+      </div>
+    </div>
+  </main>
+</div>
+`;

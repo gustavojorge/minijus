@@ -1,0 +1,61 @@
+.movementItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.movementItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.movementItem.blocked {
+  cursor: pointer;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border: 2px dashed #dbd8d1;
+  border-radius: 8px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.movementItem.blocked:hover {
+  background-color: #f3f4f6;
+  border-color: #10b981;
+}
+
+.movementDate {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.movementDescription {
+  display: block;
+  line-height: 1.7;
+  color: #374151;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 0.9375rem;
+}
+
+.blockedContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.blockedMessage {
+  display: block;
+  line-height: 1.6;
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
+
+.blockedCta {
+  display: block;
+  color: #10b981;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+

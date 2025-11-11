@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SearchBar /> should render search form 1`] = `
+<form
+  aria-label="Buscar processos"
+  class="searchForm"
+  role="search"
+>
+  <div
+    class="searchControls"
+  >
+    <div
+      class="searchWrapper"
+    >
+      <input
+        aria-label="Campo de busca de processos"
+        data-testid="input-search-bar"
+        value=""
+      />
+      <button
+        aria-label="Executar busca"
+        data-testid="button-search-bar"
+        disabled=""
+        type="submit"
+      >
+        Buscar
+      </button>
+    </div>
+    <select
+      aria-label="Filtrar por tribunal"
+      data-testid="select-search-bar"
+    >
+      <option
+        value="ALL"
+      >
+        Tribunal
+      </option>
+      <option
+        value="TJAL"
+      >
+        TJAL
+      </option>
+      <option
+        value="TJCE"
+      >
+        TJCE
+      </option>
+    </select>
+  </div>
+</form>
+`;

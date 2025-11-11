@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LawsuitDetail Page should render lawsuit details when data is loaded 1`] = `
+<div
+  class="page"
+>
+  <div
+    data-testid="header"
+  >
+    Header
+  </div>
+  <main
+    class="main"
+    role="main"
+  >
+    <div
+      class="searchBarContainer"
+    >
+      <div
+        data-testid="search-bar"
+      >
+        <button>
+          Search
+        </button>
+      </div>
+    </div>
+    <div
+      data-testid="lawsuit-header"
+    >
+      5001682-88.2020.8.13.0672
+       - 
+      TJAL
+    </div>
+    <div
+      class="contentGrid"
+    >
+      <div
+        class="movementsColumn"
+      >
+        <div
+          data-testid="movement-session"
+        >
+          <div>
+            Distribuição
+          </div>
+          <div>
+            Citação
+          </div>
+        </div>
+      </div>
+      <div
+        class="detailsColumn"
+      >
+        <div
+          data-testid="detail-session"
+        >
+          TJAL
+        </div>
+        <div
+          data-testid="party-session"
+        >
+          <div>
+            João Silva
+          </div>
+          <div>
+            Maria Santos
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+`;

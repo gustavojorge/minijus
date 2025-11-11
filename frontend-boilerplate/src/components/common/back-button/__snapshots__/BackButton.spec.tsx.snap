@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BackButton /> should render with default label 1`] = `
+<button
+  class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button backButton"
+  data-accent-color="jade"
+>
+  Voltar
+</button>
+`;

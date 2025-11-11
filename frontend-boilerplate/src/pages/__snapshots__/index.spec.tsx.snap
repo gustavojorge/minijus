@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Index Page should render page with all sections 1`] = `
+<div
+  class="page"
+>
+  <div
+    data-testid="header"
+  >
+    Header
+  </div>
+  <main
+    class="main"
+    role="main"
+  >
+    <div
+      data-testid="header-session"
+    >
+      Header Session
+    </div>
+    <div
+      data-testid="search-bar"
+    >
+      <button>
+        Search
+      </button>
+    </div>
+    <div
+      data-testid="features-section"
+    >
+      Features
+    </div>
+  </main>
+</div>
+`;

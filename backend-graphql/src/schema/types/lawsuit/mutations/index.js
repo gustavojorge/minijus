@@ -1,0 +1,2 @@
+export * from './registerLastInteraction.js';
+

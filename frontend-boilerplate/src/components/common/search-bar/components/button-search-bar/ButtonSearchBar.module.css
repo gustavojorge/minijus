@@ -1,0 +1,63 @@
+.searchIconButton {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: color 0.2s, transform 0.2s;
+  border-radius: 50%;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+}
+
+.searchIconButton:hover:not(:disabled) {
+  color: #10b981;
+}
+
+.searchIconButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.searchIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: inherit;
+}
+
+@media (min-width: 768px) {
+  .searchIconButton {
+    height: 3rem;
+    width: 3rem;
+  }
+
+  .searchIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .searchIconButton {
+    height: 3.25rem;
+    width: 3.25rem;
+  }
+
+  .searchIcon {
+    width: 1.625rem;
+    height: 1.625rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .searchIconButton {
+    height: 3.5rem;
+    width: 3.5rem;
+  }
+}
+

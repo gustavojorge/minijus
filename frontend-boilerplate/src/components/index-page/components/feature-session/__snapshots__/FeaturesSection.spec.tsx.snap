@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FeaturesSection /> should render all features 1`] = `
+<section
+  aria-labelledby="features-title"
+  class="features"
+>
+  <div
+    class="featuresGrid"
+  >
+    <div
+      data-testid="feature-item"
+    >
+      Encontre processos pelo CNJ
+    </div>
+    <div
+      data-testid="feature-item"
+    >
+      Acesse as movimentações e outras informações do processo
+    </div>
+    <div
+      data-testid="feature-item"
+    >
+      Filtre por tribunal (TJAL ou TJCE)
+    </div>
+  </div>
+</section>
+`;

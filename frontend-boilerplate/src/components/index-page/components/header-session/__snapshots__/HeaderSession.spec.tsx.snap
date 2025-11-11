@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<HeaderSession /> should render title and description 1`] = `
+<div
+  class="headerSession"
+>
+  <h1
+    class="title"
+    id="main-title"
+  >
+    Consulta processual
+  </h1>
+  <p
+    class="searchDescription"
+    id="search-description"
+  >
+    Consultar processos por CNJ e tribunal
+  </p>
+</div>
+`;

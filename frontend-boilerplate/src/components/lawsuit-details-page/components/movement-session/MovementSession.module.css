@@ -1,0 +1,33 @@
+.movementSession {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  background-color: #f3f4f6;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.movementsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 200px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .movementsList {
+    padding: 2rem;
+  }
+
+  .sectionHeader {
+    padding: 1.25rem 2rem;
+  }
+}
+

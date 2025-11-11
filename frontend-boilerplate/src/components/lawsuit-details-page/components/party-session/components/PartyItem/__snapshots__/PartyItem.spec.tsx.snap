@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PartyItem /> should render party name and role 1`] = `
+<div
+  class="partyItem"
+>
+  <span
+    class="rt-Text rt-r-size-3 rt-r-weight-medium partyName"
+  >
+    João Silva
+  </span>
+  <span
+    class="rt-Text rt-r-size-2 partyRole"
+    data-accent-color="gray"
+  >
+    Parte envolvida - 
+    Autor
+  </span>
+</div>
+`;

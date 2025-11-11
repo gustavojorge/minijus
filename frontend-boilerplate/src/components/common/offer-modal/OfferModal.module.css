@@ -1,0 +1,63 @@
+.modalContent {
+  max-width: 500px;
+  width: 90%;
+  padding: 0 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.modalBody {
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #374151;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.subscribeButton {
+  width: 100%;
+  background-color: #059669 !important;
+  color: white !important;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.subscribeButton:hover {
+  background-color: #047857 !important;
+}
+
+@media (min-width: 768px) {
+  .modalContent {
+    max-width: 550px;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 1.0625rem;
+  }
+}
+

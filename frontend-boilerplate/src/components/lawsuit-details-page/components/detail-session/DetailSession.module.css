@@ -1,0 +1,30 @@
+.detailSession {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  background-color: #f3f4f6;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .detailsList {
+    padding: 2rem;
+  }
+
+  .sectionHeader {
+    padding: 1.25rem 2rem;
+  }
+}
+

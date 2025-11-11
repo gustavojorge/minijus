@@ -1,0 +1,23 @@
+.notFoundContainer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.notFoundText {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+}
+
+.notFoundImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+

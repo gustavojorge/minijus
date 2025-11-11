@@ -1,0 +1,52 @@
+.card {
+  width: 100%;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.cardContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.court {
+  white-space: nowrap;
+}
+
+.parties {
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.metadata {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+.viewButton {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+@media (min-width: 768px) {
+  .cardContent {
+    padding: 2rem;
+  }
+}
+

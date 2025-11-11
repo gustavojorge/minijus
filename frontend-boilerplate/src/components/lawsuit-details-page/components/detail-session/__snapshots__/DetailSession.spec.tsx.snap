@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DetailSession /> should render lawsuit details 1`] = `
+<div
+  class="detailSession"
+>
+  <div
+    class="sectionHeader"
+  >
+    <span
+      class="rt-Text rt-r-size-4 rt-r-weight-bold"
+    >
+      Detalhes do processo
+    </span>
+  </div>
+  <div
+    class="detailsList"
+  >
+    <div
+      data-testid="detail-item"
+    >
+      Tribunal
+      : 
+      TJAL
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Data de início
+      : 
+      14/01/2020
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Movimentações
+      : 
+      2
+    </div>
+  </div>
+</div>
+`;

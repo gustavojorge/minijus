@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Header /> should render header with logo and navigation 1`] = `
+<header
+  class="header"
+  role="banner"
+>
+  <div
+    class="container"
+  >
+    <a
+      aria-label="Jusbrasil - Página inicial"
+      class="logoLink"
+      href="/"
+    >
+      <img
+        alt="Jusbrasil Logo"
+        class="logoFull"
+        height="40"
+        src="/jus_logo.png"
+        width="150"
+      />
+      <img
+        alt="Jusbrasil"
+        class="logoIcon"
+        height="40"
+        src="/jus_icon.png"
+        width="40"
+      />
+    </a>
+    <nav
+      aria-label="Navegação principal"
+      class="nav"
+      role="navigation"
+    >
+      <a
+        aria-label="Cadastre-se na plataforma"
+        class="rt-reset rt-BaseButton rt-r-size-3 rt-variant-outline rt-Button button"
+        data-accent-color="jade"
+        href="/"
+      >
+        Cadastre-se
+      </a>
+      <a
+        aria-label="Entrar na sua conta"
+        class="rt-reset rt-BaseButton rt-r-size-3 rt-variant-outline rt-Button button"
+        data-accent-color="gray"
+        href="/"
+      >
+        Entrar
+      </a>
+    </nav>
+  </div>
+</header>
+`;
