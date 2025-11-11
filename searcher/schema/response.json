@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resposta",
+  "description": "Resposta da busca de processos",
+  "type": "object",
+  "properties": {
+    "hits": {
+      "title": "Hits",
+      "description": "Número total de processos encontrados",
+      "type": "integer"
+    },
+    "lawsuits": {
+      "title": "lawsuits",
+      "description": "Lista de processos encontrados",
+      "type": "array",
+      "items": {
+        "title": "Lawsuit",
+        "description": "Processo encontrado",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "ID",
+            "description": "ID do processo no banco de dados",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "description": "CNJ do processo",
+            "type": "string"
+          },
+          "court": {
+            "title": "Court",
+            "description": "Tribunal do processo",
+            "type": "string"
+          },
+          "nature": {
+            "title": "Nature",
+            "description": "Natureza do processo",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "description": "Tipo de processo",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "description": "Assunto do processo",
+            "type": "string"
+          },
+          "date": {
+            "title": "Date",
+            "description": "Data de distribuição do processo",
+            "type": "string",
+            "format": "date"
+          },
+          "judge": {
+            "title": "Judge",
+            "description": "Juiz responsável pelo processo",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "Valor da causa",
+            "type": "number"
+          },
+          "related_people": {
+            "title": "Related People",
+            "description": "Partes envolvidas no processo",
+            "type": "array",
+            "items": {
+              "title": "Related Person",
+              "description": "Parte envolvida no processo",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Name",
+                  "description": "Nome da parte",
+                  "type": "string"
+                },
+                "role": {
+                  "title": "Role",
+                  "description": "Papel da parte no processo",
+                  "type": "string"
+                }
+              },
+            }
+          },
+          "lawyers": {
+            "title": "Lawyers",
+            "description": "Advogados envolvidos no processo",
+            "type": "array",
+            "items": {
+              "title": "Lawyer",
+              "description": "Advogado envolvido no processo",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Name",
+                  "description": "Nome do advogado",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "activities": {
+            "title": "Activities",
+            "description": "Andamentos do processo",
+            "type": "array",
+            "items": {
+              "title": "Activity",
+              "description": "Andamento do processo",
+              "type": "object",
+              "properties": {
+                "date": {
+                  "title": "Date",
+                  "description": "Data do andamento",
+                  "type": "string",
+                  "format": "date"
+                },
+                "description": {
+                  "title": "Description",
+                  "description": "Descrição do andamento",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "date",
+                "description"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "related_people",
+          "activities"
+        ]
+      }
+    }
+  },
+  "required": [
+    "hits",
+    "lawsuits"
+  ]
+}

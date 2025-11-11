@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Requisição",
+  "description": "Requisição de busca de processos",
+  "type": "object",
+  "properties": {
+    "query": {
+      "title": "Query",
+      "description": "Consulta a ser realizada",
+      "type": "string"
+    },
+    "filters": {
+      "title": "Filters",
+      "description": "Filtros a serem aplicados na consulta",
+      "type": "object",
+      "properties": {
+        "court": {
+          "title": "Court",
+          "description": "Tribunal a ser filtrado",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "description": "Filtro de data",
+          "type": "object",
+          "properties": {
+            "date": {
+              "title": "Date",
+              "description": "Data a ser usada no filtro",
+              "type": "string",
+              "format": "date"
+            },
+            "operator": {
+              "title": "Operator",
+              "description": "Operador de comparação do filtro",
+              "type": "string",
+              "enum": ["<", "=", ">"]
+            }
+          }
+        }
+      },
+      "required": [],
+      "default": {}
+    },
+    "limit": {
+      "title": "Limit",
+      "description": "Quantidade máxima de processos a serem retornados",
+      "type": "integer",
+      "default": 10
+    },
+    "offset": {
+      "title": "Offset",
+      "description": "Quantidade de processos do topo dos resultados a serem ignorados",
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "query"
+  ]
+}

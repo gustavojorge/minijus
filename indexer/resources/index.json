@@ -1,0 +1,96 @@
+{
+  "settings": {
+    "index": {
+      "refresh_interval": "10s",
+      "number_of_shards": "1",
+      "number_of_replicas": "1",
+      "analysis": {
+        "filter": {
+          "stemmer": {
+            "type": "stemmer",
+            "language": "minimal_portuguese"
+          },
+          "stop_word": {
+            "type": "stop",
+            "stopwords": "_brazilian_"
+          }
+        },
+        "analyzer": {
+          "default": {
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": [
+              "lowercase",
+              "asciifolding",
+              "stop_word",
+              "stemmer"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "number": {
+        "type": "keyword"
+      },
+      "date": {
+        "type": "date"
+      },
+      "court": {
+        "type": "keyword"
+      },
+      "judge": {
+        "type": "text",
+        "analyzer": "default"
+      },
+      "kind": {
+        "type": "keyword"
+      },
+      "lawyers": {
+        "properties": {
+          "name": {
+            "type": "text",
+            "analyzer": "default"
+          }
+        }
+      },
+      "nature": {
+        "type": "text",
+        "analyzer": "default"
+      },
+      "related_people": {
+        "properties": {
+          "name": {
+            "type": "text",
+            "analyzer": "default"
+          },
+          "role": {
+            "type": "text",
+            "analyzer": "default"
+          }
+        }
+      },
+      "subject": {
+        "type": "text",
+        "analyzer": "default"
+      },
+      "value": {
+        "type": "float"
+      },
+      "activities": {
+        "properties": {
+          "date": {
+            "type": "date"
+          },
+          "description": {
+            "type": "text",
+            "analyzer": "default"
+          }
+        }
+      }
+    }
+  }
+}
