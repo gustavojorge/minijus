@@ -4,10 +4,11 @@ import Head from "next/head";
 import { useState } from "react";
 import { Text } from "@radix-ui/themes";
 
-import { Header, SearchBar, MovementSession, PartySession, DetailSession, LawsuitHeader, OfferModal } from "@/components";
+import { Header, SearchBar, MovementSession, PartySession, DetailSession, LawyerSession, LawsuitHeader, OfferModal } from "@/components";
 import { useExperiment } from "@/hooks/useExperiment";
 import { useNextPlanModal } from "@/hooks/useNextPlanModal";
 import { GET_LAWSUIT_BY_NUMBER_QUERY } from "@/graphql/queries/lawsuit";
+import { stripMarkTags } from "@/utils/highlight";
 import styles from "@/styles/LawsuitDetail.module.css";
 
 export default function LawsuitDetailPage() {
@@ -16,7 +17,8 @@ export default function LawsuitDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovementId, setSelectedMovementId] = useState<string>("");
 
-  const cnj = typeof cnjNumber === "string" ? decodeURIComponent(cnjNumber) : "";
+  const cnjRaw = typeof cnjNumber === "string" ? decodeURIComponent(cnjNumber) : "";
+  const cnj = stripMarkTags(cnjRaw);
 
   const { data, loading, error } = useQuery(GET_LAWSUIT_BY_NUMBER_QUERY, {
     variables: { number: cnj },
@@ -32,7 +34,7 @@ export default function LawsuitDetailPage() {
     const query: { q?: string; court?: string } = {};
     
     if (searchCnj) {
-      query.q = searchCnj;
+      query.q = stripMarkTags(searchCnj);
     }
     
     if (court !== "ALL") {
@@ -94,10 +96,10 @@ export default function LawsuitDetailPage() {
   return (
     <>
       <Head>
-        <title>Processo {lawsuit.number} | Jusbrasil</title>
+        <title>Processo {stripMarkTags(lawsuit.number)} | Jusbrasil</title>
         <meta
           name="description"
-          content={`Detalhes do processo ${lawsuit.number}`}
+          content={`Detalhes do processo ${stripMarkTags(lawsuit.number)}`}
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -112,14 +114,14 @@ export default function LawsuitDetailPage() {
 
           <LawsuitHeader
             number={lawsuit.number}
-            court={lawsuit.court}
-            startDate={lawsuit.startDate}
+            court={lawsuit.court || ""}
+            startDate={lawsuit.startDate || ""}
           />
 
           <div className={styles.contentGrid}>
             <div className={styles.movementsColumn}>
               <MovementSession
-                movements={lawsuit.movements}
+                movements={lawsuit.movements || []}
                 shouldBlockLastMovement={shouldBlockLastMovement}
                 onBlockedMovementClick={handleBlockedMovementClick}
               />
@@ -127,7 +129,10 @@ export default function LawsuitDetailPage() {
 
             <div className={styles.detailsColumn}>
               <DetailSession lawsuit={lawsuit} />
-              <PartySession parties={lawsuit.parties} />
+              <PartySession parties={lawsuit.parties || []} />
+              {lawsuit.lawyers && lawsuit.lawyers.length > 0 && (
+                <LawyerSession lawyers={lawsuit.lawyers} />
+              )}
             </div>
           </div>
         </main>
@@ -138,7 +143,7 @@ export default function LawsuitDetailPage() {
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
           modalData={modalData}
-          lawsuitNumber={lawsuit.number}
+          lawsuitNumber={stripMarkTags(lawsuit.number)}
           movementId={selectedMovementId}
         />
       )}

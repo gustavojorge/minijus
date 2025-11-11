@@ -33,10 +33,11 @@
 .movementDescription {
   display: block;
   line-height: 1.7;
-  color: #374151;
+  color: #373d51;
   white-space: pre-wrap;
   word-wrap: break-word;
   font-size: 0.9375rem;
+  text-align: justify;
 }
 
 .blockedContent {

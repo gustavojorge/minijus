@@ -1,0 +1,13 @@
+.lawyerItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.lawyerItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+

@@ -15,14 +15,24 @@ export const GET_LAWSUIT_BY_NUMBER_QUERY = gql`
         id
         date
         description
+        lastInteractionDate
+      }
+      nature
+      kind
+      subject
+      date
+      judge
+      value
+      lawyers {
+        name
       }
     }
   }
 `;
 
 export const SEARCH_LAWSUITS_QUERY = gql`
-  query SearchLawsuits($court: String, $number: String) {
-    searchLawsuitsQuery(court: $court, number: $number) {
+  query SearchLawsuits($court: String, $query: String, $number: String) {
+    searchLawsuitsQuery(court: $court, query: $query, number: $number) {
       id
       number
       parties {
@@ -35,6 +45,16 @@ export const SEARCH_LAWSUITS_QUERY = gql`
         id
         date
         description
+        lastInteractionDate
+      }
+      nature
+      kind
+      subject
+      date
+      judge
+      value
+      lawyers {
+        name
       }
     }
   }

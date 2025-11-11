@@ -7,6 +7,7 @@ import {
   FeaturesSection,
   HeaderSession,
 } from "@/components";
+import { stripMarkTags } from "@/utils/highlight";
 import styles from "@/styles/Index.module.css";
 
 export default function Search() {
@@ -16,7 +17,7 @@ export default function Search() {
     const query: { q?: string; court?: string } = {};
     
     if (cnj) {
-      query.q = cnj;
+      query.q = stripMarkTags(cnj);
     }
     
     if (court !== "ALL") {

@@ -2,6 +2,8 @@ import { Card, Text, Button } from "@radix-ui/themes";
 import Link from "next/link";
 
 import { Lawsuit } from "@/types";
+import { formatDate } from "@/utils/date";
+import { renderHighlightedText, stripMarkTags } from "@/utils/highlight";
 import styles from "./lawsuit-search-item.module.css";
 
 interface LawsuitSearchItemProps {
@@ -14,26 +16,38 @@ export function LawsuitSearchItem({ lawsuit }: LawsuitSearchItemProps) {
       <div className={styles.cardContent}>
         <div className={styles.cardHeader}>
           <Text size="4" weight="bold">
-            {lawsuit.number}
+            {renderHighlightedText(lawsuit.number)}
           </Text>
-          <Text size="2" color="gray" className={styles.court}>
-            {lawsuit.court}
-          </Text>
+          {lawsuit.court && (
+            <Text size="2" color="gray" className={styles.court}>
+              {renderHighlightedText(lawsuit.court)}
+            </Text>
+          )}
         </div>
         <div className={styles.parties}>
-          <Text size="3" color="gray">
-            {lawsuit.parties
-              .map((party) => `${party.name} (${party.role})`)
-              .join(" x ")}
-          </Text>
+          {lawsuit.parties && lawsuit.parties.length > 0 ? (
+            <Text size="3" color="gray">
+              {lawsuit.parties.map((party, idx) => (
+                <span key={idx}>
+                  {idx > 0 && " x "}
+                  {renderHighlightedText(party.name || "")} ({party.role || ""})
+                </span>
+              ))}
+            </Text>
+          ) : (
+            <Text size="3" color="gray">
+              Nenhuma parte encontrada
+            </Text>
+          )}
         </div>
         <div className={styles.metadata}>
+          {lawsuit.startDate && (
+            <Text size="1" color="gray">
+              Início: {formatDate(lawsuit.startDate)}
+            </Text>
+          )}
           <Text size="1" color="gray">
-            Início: {new Date(lawsuit.startDate).toLocaleDateString("pt-BR")}
-          </Text>
-          <Text size="1" color="gray">
-            {lawsuit.movements.length} movimentação
-            {lawsuit.movements.length !== 1 ? "ões" : ""}
+            {(lawsuit.movements?.length || 0)} {(lawsuit.movements?.length || 0) === 1 ? "movimentação" : "movimentações"}
           </Text>
         </div>
         <Button
@@ -44,8 +58,8 @@ export function LawsuitSearchItem({ lawsuit }: LawsuitSearchItemProps) {
           className={styles.viewButton}
         >
           <Link
-            href={`/lawsuit/${encodeURIComponent(lawsuit.number)}`}
-            aria-label={`Ver detalhes do processo ${lawsuit.number}`}
+            href={`/lawsuit/${encodeURIComponent(stripMarkTags(lawsuit.number))}`}
+            aria-label={`Ver detalhes do processo ${stripMarkTags(lawsuit.number)}`}
           >
             Ver Detalhes
           </Link>

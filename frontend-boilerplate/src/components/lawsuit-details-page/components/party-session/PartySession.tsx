@@ -17,7 +17,7 @@ export function PartySession({ parties }: PartySessionProps) {
         </Text>
       </div>
       <div className={styles.partiesList}>
-        {parties.length > 0 ? (
+        {parties && parties.length > 0 ? (
           parties.map((party, index) => (
             <PartyItem key={index} name={party.name} role={party.role} />
           ))

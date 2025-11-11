@@ -30,13 +30,13 @@ export function MovementSession({
 
             return (
               <MovementItem
-                key={movement.id}
-                date={movement.date}
-                description={movement.description}
+                key={movement.id || `movement-${index}`}
+                date={movement.date || undefined}
+                description={movement.description || undefined}
                 isBlocked={isBlocked}
                 onBlockedClick={
-                  isBlocked && onBlockedMovementClick
-                    ? () => onBlockedMovementClick(movement.id)
+                  isBlocked && onBlockedMovementClick && movement.id
+                    ? () => onBlockedMovementClick(movement.id!)
                     : undefined
                 }
               />

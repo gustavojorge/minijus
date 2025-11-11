@@ -11,11 +11,11 @@ export default function SearchResultsPage() {
   const router = useRouter();
   const { q, court } = router.query;
 
-  const cnj = typeof q === "string" ? q : "";
+  const searchQuery = typeof q === "string" ? q : "";
   const courtFilter = typeof court === "string" ? court : undefined;
-  const variables = getSearchVariables(cnj, courtFilter);
+  const variables = getSearchVariables(searchQuery, courtFilter);
 
-  const shouldSkip = !cnj && (!courtFilter || courtFilter === "ALL");
+  const shouldSkip = !searchQuery && (!courtFilter || courtFilter === "ALL");
 
   const { data, loading, error } = useQuery(SEARCH_LAWSUITS_QUERY, {
     variables,
@@ -24,7 +24,7 @@ export default function SearchResultsPage() {
 
   const lawsuits = data?.searchLawsuitsQuery || [];
   const hasResults = lawsuits.length > 0;
-  const hasSearchParams = cnj || (courtFilter && courtFilter !== "ALL");
+  const hasSearchParams = searchQuery || (courtFilter && courtFilter !== "ALL");
   const showNotFound = !loading && !error && hasSearchParams && !hasResults;
 
   const getErrorMessage = () => {

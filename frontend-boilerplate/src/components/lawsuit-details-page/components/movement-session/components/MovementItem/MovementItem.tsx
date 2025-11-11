@@ -1,10 +1,12 @@
 import { Text } from "@radix-ui/themes";
 
+import { formatDate } from "@/utils/date";
+import { renderHighlightedText } from "@/utils/highlight";
 import styles from "./MovementItem.module.css";
 
 interface MovementItemProps {
-  date: string;
-  description: string;
+  date?: string;
+  description?: string;
   isBlocked?: boolean;
   onBlockedClick?: () => void;
 }
@@ -27,7 +29,7 @@ export function MovementItem({
       onClick={handleClick}
     >
       <Text size="2" weight="medium" color="gray" className={styles.movementDate}>
-        {new Date(date).toLocaleDateString("pt-BR")}
+        {formatDate(date)}
       </Text>
       {isBlocked ? (
         <div className={styles.blockedContent}>
@@ -40,7 +42,7 @@ export function MovementItem({
         </div>
       ) : (
         <Text size="3" className={styles.movementDescription}>
-          {description}
+          {renderHighlightedText(description)}
         </Text>
       )}
     </div>

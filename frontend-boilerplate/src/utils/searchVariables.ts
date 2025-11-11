@@ -1,11 +1,15 @@
-export function getSearchVariables(
-  cnj: string,
-  court?: string
-): { number?: string; court?: string } {
-  const variables: { number?: string; court?: string } = {};
+import { stripMarkTags } from "@/utils/highlight";
 
-  if (cnj) {
-    variables.number = cnj;
+export function getSearchVariables(
+  query: string,
+  court?: string
+): { query?: string; court?: string; number?: string } {
+  const variables: { query?: string; court?: string; number?: string } = {};
+
+  if (query) {
+    const cleanQuery = stripMarkTags(query);
+    variables.query = cleanQuery;
+    variables.number = cleanQuery;
   }
 
   if (court && court !== "ALL") {
