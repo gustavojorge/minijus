@@ -29,7 +29,7 @@ export function DetailSession({ lawsuit }: DetailSessionProps) {
         <DetailItem label="Tribunal" value={lawsuit.court} />
         <DetailItem
           label="Data de distribuição"
-          value={lawsuit.date ? formatDateUtil(lawsuit.date) : undefined}
+          value={lawsuit.startDate ? formatDateUtil(lawsuit.startDate) : undefined}
         />
         <DetailItem label="Natureza" value={lawsuit.nature} />
         <DetailItem label="Tipo" value={lawsuit.kind} />

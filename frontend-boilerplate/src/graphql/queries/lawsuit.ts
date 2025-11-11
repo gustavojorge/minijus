@@ -20,7 +20,6 @@ export const GET_LAWSUIT_BY_NUMBER_QUERY = gql`
       nature
       kind
       subject
-      date
       judge
       value
       lawyers {
@@ -50,7 +49,6 @@ export const SEARCH_LAWSUITS_QUERY = gql`
       nature
       kind
       subject
-      date
       judge
       value
       lawyers {

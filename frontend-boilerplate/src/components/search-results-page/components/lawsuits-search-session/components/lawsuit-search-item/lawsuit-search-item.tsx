@@ -52,7 +52,7 @@ export function LawsuitSearchItem({ lawsuit, originalQuery }: LawsuitSearchItemP
         <div className={styles.metadata}>
           {lawsuit.startDate && (
             <Text size="1" color="gray">
-              Início: {formatDate(lawsuit.startDate)}
+              Data de distribuição: {formatDate(lawsuit.startDate)}
             </Text>
           )}
           <Text size="1" color="gray">

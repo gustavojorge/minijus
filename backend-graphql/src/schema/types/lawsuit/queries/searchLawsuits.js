@@ -42,7 +42,6 @@ const transformLawsuit = (lawsuit) => {
     nature: lawsuit.nature,
     kind: lawsuit.kind,
     subject: lawsuit.subject,
-    date: lawsuit.date,
     judge: lawsuit.judge,
     value: lawsuit.value,
     lawyers: lawsuit.lawyers || [],

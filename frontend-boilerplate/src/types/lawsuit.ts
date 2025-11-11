@@ -21,11 +21,9 @@ export interface Lawsuit {
   court?: string;
   startDate?: string;
   movements?: Movement[];
-  // Additional fields from searcher API
   nature?: string;
   kind?: string;
   subject?: string;
-  date?: string; // distribution date
   judge?: string;
   value?: number;
   lawyers?: Lawyer[];

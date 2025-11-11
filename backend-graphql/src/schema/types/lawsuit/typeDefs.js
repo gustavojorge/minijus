@@ -41,15 +41,13 @@ export const LawsuitType = new GraphQLObjectType({
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLID) },
     number: { type: new GraphQLNonNull(GraphQLString) },
-    parties: { type: new GraphQLList(PartyType) }, // related_people from searcher
+    parties: { type: new GraphQLList(PartyType) }, 
     court: { type: GraphQLString },
-    startDate: { type: GraphQLString }, // date from searcher
-    movements: { type: new GraphQLList(MovementType) }, // activities from searcher
-    // Additional fields from searcher
+    startDate: { type: GraphQLString }, 
+    movements: { type: new GraphQLList(MovementType) }, 
     nature: { type: GraphQLString },
     kind: { type: GraphQLString },
     subject: { type: GraphQLString },
-    date: { type: GraphQLString }, // distribution date
     judge: { type: GraphQLString },
     value: { type: GraphQLFloat },
     lawyers: { type: new GraphQLList(LawyerType) },
