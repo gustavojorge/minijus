@@ -7,7 +7,18 @@ logger = get_logger(__name__)
 
 def build_query(request) -> Dict[str, Any]:
     query_string = request.query.strip()
+    filters = build_filters(request)
 
+    # If query is empty but filters are present, return query with only filter context
+    if not query_string and filters:
+        logger.info(f"[QUERY] Filter-only query (no text input)")
+        return {
+            "bool": {
+                "filter": filters
+            }
+        }
+
+    # Build must query based on query type
     if CNJ_PATTERN.match(query_string):
         logger.info(f"[QUERY] CNJ number")
         must_query = {"term": {"number": query_string}}
@@ -50,8 +61,6 @@ def build_query(request) -> Dict[str, Any]:
                 ]
             }
         }
-
-    filters = build_filters(request)
 
     return {
         "bool": {

@@ -57,27 +57,7 @@ export const searchLawsuitsQuery = {
     query: { type: GraphQLString }, // Generic query (CNJ, phrase, or text)
   },
   resolve: async (root, { court, number, query: queryParam }) => {
-    let searchQuery = queryParam || number;
-
-    // If no query is provided but court filter is, we need a query
-    // Use '*' as a placeholder - the searcher will treat it as text search
-    // Note: This is not ideal, but the searcher requires a query string
-    // In a future improvement, the searcher should support match_all for filter-only searches
-    if (!searchQuery && court) {
-      searchQuery = '*';
-    }
-
-    // If still no query, return empty results
-    if (!searchQuery) {
-      return [];
-    }
-
-    // If using legacy 'number' parameter, validate CNJ format
-    if (number && !queryParam) {
-      if (!isValidCNJ(number)) {
-        throw new Error('Erro de formatação: CNJ inválido.');
-      }
-    }
+    let searchQuery = queryParam || number || '';
 
     // Build filters
     const filters = {};
@@ -85,8 +65,20 @@ export const searchLawsuitsQuery = {
       filters.court = court.toUpperCase();
     }
 
+    // If no query and no filters, return empty results
+    if (!searchQuery && !filters.court) {
+      return [];
+    }
+
+    // If using 'number' parameter, validate CNJ format
+    if (number && !queryParam) {
+      if (!isValidCNJ(number)) {
+        throw new Error('Erro de formatação: CNJ inválido.');
+      }
+    }
+
     try {
-      // Call searcher API with the generic query
+      // Call searcher API with the query (can be empty string if only filters are present)
       const response = await searcherAPI.searchLawsuits({
         query: searchQuery,
         filters,
