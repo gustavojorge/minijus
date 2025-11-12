@@ -1,127 +1,173 @@
 import { searchLawsuitsQuery } from './searchLawsuits';
-import lawsuitsMock from '../lawsuitsMock';
+import searcherAPI from '../../../../apis/searcherAPI';
+
+jest.mock('../../../../apis/searcherAPI', () => ({
+  searchLawsuits: jest.fn(),
+}));
+
+const mockLawsuit = {
+  id: '1',
+  number: '5001682-88.2020.8.13.0672',
+  court: 'TJAL',
+  date: '2020-01-15',
+  related_people: [
+    { name: 'João Silva', role: 'Autor' },
+    { name: 'Maria Santos', role: 'Réu' },
+  ],
+  activities: [
+    { id: 'mov1', date: '2020-01-15', description: 'Distribuição' },
+    { id: 'mov2', date: '2020-02-20', description: 'Citação' },
+  ],
+  nature: 'Cível',
+  kind: 'Ação',
+  subject: 'Indenização',
+  judge: 'João da Silva',
+  value: 10000.0,
+  lawyers: [{ name: 'Dr. José' }],
+};
 
 describe('searchLawsuitsQuery', () => {
-  describe('CNJ validation', () => {
-    it('should throw error for invalid CNJ with letters', async () => {
-      await expect(
-        searchLawsuitsQuery.resolve(null, { number: '5001682-88.2020.8.13.0672a' })
-      ).rejects.toThrow('Erro de formatação: CNJ inválido.');
-    });
-
-    it('should throw error for CNJ with less than 20 digits', async () => {
-      await expect(
-        searchLawsuitsQuery.resolve(null, { number: '123' })
-      ).rejects.toThrow('Erro de formatação: CNJ inválido.');
-    });
-
-    it('should throw error for CNJ with more than 20 digits', async () => {
-      await expect(
-        searchLawsuitsQuery.resolve(null, { number: '500168288202081306721' })
-      ).rejects.toThrow('Erro de formatação: CNJ inválido.');
-    });
-
-    it('should accept valid CNJ with mask', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '5001682-88.2020.8.13.0672' 
-      });
-      expect(result).toBeDefined();
-      expect(Array.isArray(result)).toBe(true);
-    });
-
-    it('should accept valid CNJ without mask', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '50016828820208130672' 
-      });
-      expect(result).toBeDefined();
-      expect(Array.isArray(result)).toBe(true);
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe('Search by CNJ number', () => {
+  describe('Search by query (CNJ)', () => {
     it('should find lawsuit by CNJ with mask', async () => {
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [mockLawsuit],
+      });
+
       const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '5001682-88.2020.8.13.0672' 
+        query: '5001682-88.2020.8.13.0672' 
       });
       
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '5001682-88.2020.8.13.0672',
+        filters: {},
+        limit: 100,
+        offset: 0,
+      });
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].number).toBe('5001682-88.2020.8.13.0672');
     });
 
     it('should find lawsuit by CNJ without mask', async () => {
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [mockLawsuit],
+      });
+
       const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '50016828820208130672' 
+        query: '50016828820208130672' 
       });
       
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '50016828820208130672',
+        filters: {},
+        limit: 100,
+        offset: 0,
+      });
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].number).toBe('5001682-88.2020.8.13.0672');
     });
 
     it('should return empty array for non-existent CNJ', async () => {
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [],
+      });
+
       const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '9999999-99.9999.9.99.9999' 
+        query: '9999999-99.9999.9.99.9999' 
       });
       
       expect(result).toEqual([]);
     });
   });
 
-  describe('Search by court', () => {
-    it('should filter lawsuits by TJAL', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { court: 'TJAL' });
-      
-      expect(result.length).toBeGreaterThan(0);
-      result.forEach(lawsuit => {
-        expect(lawsuit.court).toBe('TJAL');
+  describe('Search by court filter only', () => {
+    it('should filter lawsuits by TJAL when only court filter is provided', async () => {
+      const tjalLawsuit = { ...mockLawsuit, court: 'TJAL' };
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [tjalLawsuit],
       });
-    });
 
-    it('should filter lawsuits by TJCE', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { court: 'TJCE' });
-      
-      expect(result.length).toBeGreaterThan(0);
-      result.forEach(lawsuit => {
-        expect(lawsuit.court).toBe('TJCE');
+      const result = await searchLawsuitsQuery.resolve(null, { 
+        query: '',
+        court: 'TJAL' 
       });
+      
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '',
+        filters: { court: 'TJAL' },
+        limit: 100,
+        offset: 0,
+      });
+      expect(result.length).toBeGreaterThan(0);
+      expect(result[0].court).toBe('TJAL');
     });
 
     it('should be case insensitive for court filter', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { court: 'tjal' });
-      
-      expect(result.length).toBeGreaterThan(0);
-      result.forEach(lawsuit => {
-        expect(lawsuit.court).toBe('TJAL');
+      const tjalLawsuit = { ...mockLawsuit, court: 'TJAL' };
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [tjalLawsuit],
       });
+
+      const result = await searchLawsuitsQuery.resolve(null, { 
+        query: '',
+        court: 'tjal' 
+      });
+      
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '',
+        filters: { court: 'TJAL' },
+        limit: 100,
+        offset: 0,
+      });
+      expect(result.length).toBeGreaterThan(0);
+      expect(result[0].court).toBe('TJAL');
     });
   });
 
   describe('Combined search', () => {
-    it('should filter by both CNJ and court', async () => {
+    it('should filter by both query and court', async () => {
+      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+        lawsuits: [mockLawsuit],
+      });
+
       const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '5001682-88.2020.8.13.0672',
+        query: '5001682-88.2020.8.13.0672',
         court: 'TJAL'
       });
       
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '5001682-88.2020.8.13.0672',
+        filters: { court: 'TJAL' },
+        limit: 100,
+        offset: 0,
+      });
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].number).toBe('5001682-88.2020.8.13.0672');
       expect(result[0].court).toBe('TJAL');
     });
+  });
 
-    it('should return empty array when CNJ and court do not match', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, { 
-        number: '5001682-88.2020.8.13.0672',
-        court: 'TJCE'
-      });
+  describe('No query and no filters', () => {
+    it('should return empty array when no query and no filters are provided', async () => {
+      const result = await searchLawsuitsQuery.resolve(null, {});
       
-      expect(Array.isArray(result)).toBe(true);
+      expect(searcherAPI.searchLawsuits).not.toHaveBeenCalled();
+      expect(result).toEqual([]);
     });
   });
 
-  describe('No filters', () => {
-    it('should return all lawsuits when no filters are provided', async () => {
-      const result = await searchLawsuitsQuery.resolve(null, {});
-      
-      expect(result.length).toBe(lawsuitsMock.length);
+  describe('Error handling', () => {
+    it('should throw error when searcher API fails', async () => {
+      (searcherAPI.searchLawsuits as jest.Mock).mockRejectedValue(
+        new Error('Searcher API error')
+      );
+
+      await expect(
+        searchLawsuitsQuery.resolve(null, { query: 'test' })
+      ).rejects.toThrow('Erro ao buscar processos: Searcher API error');
     });
   });
 });

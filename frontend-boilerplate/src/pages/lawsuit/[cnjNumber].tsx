@@ -7,7 +7,7 @@ import { Text } from "@radix-ui/themes";
 import { Header, SearchBar, MovementSession, PartySession, DetailSession, LawyerSession, LawsuitHeader, OfferModal } from "@/components";
 import { useExperiment } from "@/hooks/useExperiment";
 import { useNextPlanModal } from "@/hooks/useNextPlanModal";
-import { GET_LAWSUIT_BY_NUMBER_QUERY, SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
+import { SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
 import { stripMarkTags } from "@/utils/highlight";
 import styles from "@/styles/LawsuitDetail.module.css";
 
@@ -21,14 +21,14 @@ export default function LawsuitDetailPage() {
   const cnj = stripMarkTags(cnjRaw);
   const originalQuery = typeof q === "string" ? q : null;
 
-  // Use SEARCH_LAWSUITS_QUERY if we have original query (to preserve highlights)
-  // Otherwise use GET_LAWSUIT_BY_NUMBER_QUERY (direct CNJ search)
-  const queryToUse = originalQuery ? SEARCH_LAWSUITS_QUERY : GET_LAWSUIT_BY_NUMBER_QUERY;
-  const queryVariables = originalQuery
-    ? { query: originalQuery, number: cnj }
-    : { number: cnj };
+  // Use SEARCH_LAWSUITS_QUERY with generic query parameter
+  // If we have original query (from search results), use it to preserve highlights
+  // Otherwise, use the CNJ number directly 
+  const queryVariables = {
+    query: originalQuery || cnj,
+  };
 
-  const { data, loading, error } = useQuery(queryToUse, {
+  const { data, loading, error } = useQuery(SEARCH_LAWSUITS_QUERY, {
     variables: queryVariables,
     skip: !cnj,
   });
@@ -36,6 +36,8 @@ export default function LawsuitDetailPage() {
   const { shouldBlockLastMovement, loading: experimentLoading } = useExperiment();
   const { modalData, loading: modalLoading } = useNextPlanModal();
 
+  // If we have original query, filter results to find the specific lawsuit by CNJ
+  // Otherwise, use the first result (should be the exact CNJ match)
   const lawsuit = originalQuery
     ? (data?.searchLawsuitsQuery || []).find((l) => stripMarkTags(l.number) === cnj) || null
     : data?.searchLawsuitsQuery?.[0] || null;

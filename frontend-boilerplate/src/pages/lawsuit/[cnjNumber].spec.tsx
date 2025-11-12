@@ -4,7 +4,7 @@ import { MockedProvider } from "@apollo/client/testing";
 import { useRouter } from "next/router";
 
 import LawsuitDetailPage from "./[cnjNumber]";
-import { GET_LAWSUIT_BY_NUMBER_QUERY } from "@/graphql/queries/lawsuit";
+import { SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
 import { GET_EXPERIMENT_DATA } from "@/graphql/queries/experiment";
 import { GET_NEXT_PLAN_MODAL } from "@/graphql/queries/experiment";
 
@@ -81,8 +81,8 @@ const mockLawsuit = {
 const mocks = [
   {
     request: {
-      query: GET_LAWSUIT_BY_NUMBER_QUERY,
-      variables: { number: "5001682-88.2020.8.13.0672" },
+      query: SEARCH_LAWSUITS_QUERY,
+      variables: { query: "5001682-88.2020.8.13.0672" },
     },
     result: {
       data: {
@@ -124,8 +124,8 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: GET_LAWSUIT_BY_NUMBER_QUERY,
-      variables: { number: "5001682-88.2020.8.13.0672" },
+      query: SEARCH_LAWSUITS_QUERY,
+      variables: { query: "5001682-88.2020.8.13.0672" },
     },
     error: new Error("Network error"),
   },

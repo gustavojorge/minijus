@@ -3,17 +3,15 @@ import { GraphQLList, GraphQLString } from 'graphql';
 import { LawsuitType } from '../typeDefs.js';
 import searcherAPI from '../../../../apis/searcherAPI.js';
 import { transformLawsuit } from '../utils/transformers.js';
-import { isValidCNJ } from '../utils/validations.js';
 
 export const searchLawsuitsQuery = {
   type: new GraphQLList(LawsuitType),
   args: {
     court: { type: GraphQLString }, 
-    number: { type: GraphQLString },
-    query: { type: GraphQLString }, // Generic query (CNJ, phrase, or text)
+    query: { type: GraphQLString }, // Generic query (CNJ, phrase, or text) - searcher identifies the type
   },
-  resolve: async (root, { court, number, query: queryParam }) => {
-    let searchQuery = queryParam || number || '';
+  resolve: async (root, { court, query: queryParam }) => {
+    const searchQuery = queryParam || '';
 
     // Build filters
     const filters = {};
@@ -26,15 +24,9 @@ export const searchLawsuitsQuery = {
       return [];
     }
 
-    // If using 'number' parameter, validate CNJ format
-    if (number && !queryParam) {
-      if (!isValidCNJ(number)) {
-        throw new Error('Erro de formatação: CNJ inválido.');
-      }
-    }
-
     try {
       // Call searcher API with the query (can be empty string if only filters are present)
+      // The searcher will identify if it's a CNJ, phrase query, or text search
       const response = await searcherAPI.searchLawsuits({
         query: searchQuery,
         filters,
