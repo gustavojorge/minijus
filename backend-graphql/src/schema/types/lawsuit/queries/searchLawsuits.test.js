@@ -33,7 +33,7 @@ describe('searchLawsuitsQuery', () => {
 
   describe('Search by query (CNJ)', () => {
     it('should find lawsuit by CNJ with mask', async () => {
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [mockLawsuit],
       });
 
@@ -52,7 +52,7 @@ describe('searchLawsuitsQuery', () => {
     });
 
     it('should find lawsuit by CNJ without mask', async () => {
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [mockLawsuit],
       });
 
@@ -71,7 +71,7 @@ describe('searchLawsuitsQuery', () => {
     });
 
     it('should return empty array for non-existent CNJ', async () => {
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [],
       });
 
@@ -86,13 +86,13 @@ describe('searchLawsuitsQuery', () => {
   describe('Search by court filter only', () => {
     it('should filter lawsuits by TJAL when only court filter is provided', async () => {
       const tjalLawsuit = { ...mockLawsuit, court: 'TJAL' };
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [tjalLawsuit],
       });
 
       const result = await searchLawsuitsQuery.resolve(null, { 
         query: '',
-        court: 'TJAL' 
+        filters: { court: 'TJAL' }
       });
       
       expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
@@ -107,13 +107,13 @@ describe('searchLawsuitsQuery', () => {
 
     it('should be case insensitive for court filter', async () => {
       const tjalLawsuit = { ...mockLawsuit, court: 'TJAL' };
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [tjalLawsuit],
       });
 
       const result = await searchLawsuitsQuery.resolve(null, { 
         query: '',
-        court: 'tjal' 
+        filters: { court: 'tjal' }
       });
       
       expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
@@ -127,15 +127,40 @@ describe('searchLawsuitsQuery', () => {
     });
   });
 
+  describe('Search by date filter', () => {
+    it('should filter lawsuits by date when date filter is provided', async () => {
+      searcherAPI.searchLawsuits.mockResolvedValue({
+        lawsuits: [mockLawsuit],
+      });
+
+      const result = await searchLawsuitsQuery.resolve(null, { 
+        query: '',
+        filters: { 
+          date: { date: '2023-05-15', operator: '=' }
+        }
+      });
+      
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '',
+        filters: { 
+          date: { date: '2023-05-15', operator: '=' }
+        },
+        limit: 100,
+        offset: 0,
+      });
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
   describe('Combined search', () => {
     it('should filter by both query and court', async () => {
-      (searcherAPI.searchLawsuits as jest.Mock).mockResolvedValue({
+      searcherAPI.searchLawsuits.mockResolvedValue({
         lawsuits: [mockLawsuit],
       });
 
       const result = await searchLawsuitsQuery.resolve(null, { 
         query: '5001682-88.2020.8.13.0672',
-        court: 'TJAL'
+        filters: { court: 'TJAL' }
       });
       
       expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
@@ -147,6 +172,31 @@ describe('searchLawsuitsQuery', () => {
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].number).toBe('5001682-88.2020.8.13.0672');
       expect(result[0].court).toBe('TJAL');
+    });
+
+    it('should filter by query, court and date', async () => {
+      searcherAPI.searchLawsuits.mockResolvedValue({
+        lawsuits: [mockLawsuit],
+      });
+
+      const result = await searchLawsuitsQuery.resolve(null, { 
+        query: '5001682-88.2020.8.13.0672',
+        filters: { 
+          court: 'TJAL',
+          date: { date: '2023-05-15', operator: '<' }
+        }
+      });
+      
+      expect(searcherAPI.searchLawsuits).toHaveBeenCalledWith({
+        query: '5001682-88.2020.8.13.0672',
+        filters: { 
+          court: 'TJAL',
+          date: { date: '2023-05-15', operator: '<' }
+        },
+        limit: 100,
+        offset: 0,
+      });
+      expect(result.length).toBeGreaterThan(0);
     });
   });
 
@@ -161,7 +211,7 @@ describe('searchLawsuitsQuery', () => {
 
   describe('Error handling', () => {
     it('should throw error when searcher API fails', async () => {
-      (searcherAPI.searchLawsuits as jest.Mock).mockRejectedValue(
+      searcherAPI.searchLawsuits.mockRejectedValue(
         new Error('Searcher API error')
       );
 
