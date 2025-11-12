@@ -30,7 +30,19 @@ exports[`<LawsuitSearchItem /> should render lawsuit information 1`] = `
         class="rt-Text rt-r-size-3"
         data-accent-color="gray"
       >
-        João Silva (Autor) x Maria Santos (Réu)
+        <span>
+          João Silva
+           (
+          Autor
+          )
+        </span>
+        <span>
+           x 
+          Maria Santos
+           (
+          Réu
+          )
+        </span>
       </span>
     </div>
     <div
@@ -40,7 +52,7 @@ exports[`<LawsuitSearchItem /> should render lawsuit information 1`] = `
         class="rt-Text rt-r-size-1"
         data-accent-color="gray"
       >
-        Início: 
+        Data de distribuição: 
         14/01/2020
       </span>
       <span
@@ -48,8 +60,8 @@ exports[`<LawsuitSearchItem /> should render lawsuit information 1`] = `
         data-accent-color="gray"
       >
         2
-         movimentação
-        ões
+         
+        movimentações
       </span>
     </div>
     <a

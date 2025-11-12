@@ -40,7 +40,7 @@ const mocks = [
   {
     request: {
       query: SEARCH_LAWSUITS_QUERY,
-      variables: { number: "1234567", court: undefined },
+      variables: { query: "1234567" },
     },
     result: {
       data: {
@@ -51,7 +51,7 @@ const mocks = [
   {
     request: {
       query: SEARCH_LAWSUITS_QUERY,
-      variables: { number: undefined, court: "TJAL" },
+      variables: { query: "", filters: { court: "TJAL" } },
     },
     result: {
       data: {
@@ -62,7 +62,7 @@ const mocks = [
   {
     request: {
       query: SEARCH_LAWSUITS_QUERY,
-      variables: { number: undefined, court: undefined },
+      variables: {},
     },
     result: {
       data: {
@@ -76,7 +76,7 @@ const errorMocks = [
   {
     request: {
       query: SEARCH_LAWSUITS_QUERY,
-      variables: { number: "1234567", court: undefined },
+      variables: { query: "1234567" },
     },
     error: new Error("Network error"),
   },
@@ -149,7 +149,7 @@ describe("SearchResults Page", () => {
       {
         request: {
           query: SEARCH_LAWSUITS_QUERY,
-          variables: { number: "1234567", court: undefined },
+          variables: { query: "1234567" },
         },
         result: {
           data: {

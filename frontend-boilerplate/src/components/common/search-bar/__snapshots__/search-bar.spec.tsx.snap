@@ -26,26 +26,12 @@ exports[`<SearchBar /> should render search form 1`] = `
         Buscar
       </button>
     </div>
-    <select
-      aria-label="Filtrar por tribunal"
-      data-testid="select-search-bar"
+    <button
+      aria-label="Abrir filtros de busca"
+      data-testid="filters-button"
     >
-      <option
-        value="ALL"
-      >
-        Tribunal
-      </option>
-      <option
-        value="TJAL"
-      >
-        TJAL
-      </option>
-      <option
-        value="TJCE"
-      >
-        TJCE
-      </option>
-    </select>
+      Filtros
+    </button>
   </div>
 </form>
 `;

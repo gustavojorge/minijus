@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FooterSession /> should render footer session 1`] = `
+<div
+  class="modalActions"
+>
+  <button
+    class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-soft rt-Button"
+    data-accent-color="gray"
+    data-disabled="true"
+    disabled=""
+  >
+    Limpar
+  </button>
+  <button
+    class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-solid rt-Button"
+    data-accent-color="jade"
+  >
+    Aplicar filtros
+  </button>
+</div>
+`;

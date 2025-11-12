@@ -9,7 +9,8 @@ exports[`<LawsuitHeader /> should render lawsuit header with number, court and d
   >
     Processo n. 
     5001682-88.2020.8.13.0672
-     do 
+     
+    do 
     TJAL
   </h1>
   <span

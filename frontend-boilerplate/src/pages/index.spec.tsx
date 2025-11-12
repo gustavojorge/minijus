@@ -12,7 +12,7 @@ jest.mock("../components", () => ({
   Header: () => <div data-testid="header">Header</div>,
   SearchBar: ({ onSearch }: any) => (
     <div data-testid="search-bar">
-      <button onClick={() => onSearch("1234567", "TJAL")}>Search</button>
+      <button onClick={() => onSearch("1234567", { court: "TJAL" })}>Search</button>
     </div>
   ),
   FeaturesSection: () => <div data-testid="features-section">Features</div>,

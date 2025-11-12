@@ -29,10 +29,12 @@ describe("<LawsuitSearchItem />", () => {
 
     expect(screen.getByText(mockLawsuit.number)).toBeInTheDocument();
     expect(screen.getByText(mockLawsuit.court)).toBeInTheDocument();
-    expect(screen.getByText("João Silva (Autor) x Maria Santos (Réu)")).toBeInTheDocument();
-    expect(screen.getByText(/Início:/)).toBeInTheDocument();
-    const movementsText = screen.getByText(/movimentação/);
-    expect(movementsText.textContent).toMatch(/2\s*movimentação(ões)?/);
+    expect(screen.getByText(/João Silva.*Autor/)).toBeInTheDocument();
+    expect(screen.getByText(/Maria Santos.*Réu/)).toBeInTheDocument();
+    expect(screen.getByText(/Data de distribuição:/)).toBeInTheDocument();
+    // Check for movements text - it's rendered as "2 movimentações"
+    const listItem = screen.getByRole("listitem");
+    expect(listItem.textContent).toMatch(/2\s+movimentações/);
     expect(screen.getByText("Ver Detalhes")).toBeInTheDocument();
 
     expect(container.firstChild).toMatchSnapshot();
@@ -48,7 +50,7 @@ describe("<LawsuitSearchItem />", () => {
   it("should format date correctly", () => {
     render(<LawsuitSearchItem lawsuit={mockLawsuit} />);
 
-    const dateText = screen.getByText(/Início:/);
+    const dateText = screen.getByText(/Data de distribuição:/);
     expect(dateText.textContent).toMatch(/\d{2}\/\d{2}\/\d{4}/);
   });
 

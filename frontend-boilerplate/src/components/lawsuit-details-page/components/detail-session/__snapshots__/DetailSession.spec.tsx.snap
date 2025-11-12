@@ -26,9 +26,39 @@ exports[`<DetailSession /> should render lawsuit details 1`] = `
     <div
       data-testid="detail-item"
     >
-      Data de início
+      Data de distribuição
       : 
       14/01/2020
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Natureza
+      : 
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Tipo
+      : 
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Assunto
+      : 
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Juiz
+      : 
+    </div>
+    <div
+      data-testid="detail-item"
+    >
+      Valor da causa
+      : 
     </div>
     <div
       data-testid="detail-item"

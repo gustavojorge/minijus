@@ -73,7 +73,7 @@ describe("<SearchBar />", () => {
     await user.click(button);
 
     await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("1234567-89.2021.8.06.0001", undefined);
+      expect(mockOnSearch).toHaveBeenCalledWith("1234567-89.2021.8.06.0001", {});
     });
   });
 

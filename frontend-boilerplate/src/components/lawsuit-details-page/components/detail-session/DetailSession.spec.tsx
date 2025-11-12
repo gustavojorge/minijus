@@ -28,9 +28,9 @@ describe("<DetailSession />", () => {
     const { container } = render(<DetailSession lawsuit={mockLawsuit} />);
 
     expect(screen.getByText("Detalhes do processo")).toBeInTheDocument();
-    expect(screen.getAllByTestId("detail-item")).toHaveLength(3);
+    expect(screen.getAllByTestId("detail-item").length).toBeGreaterThanOrEqual(3);
     expect(screen.getByText(/Tribunal:/)).toBeInTheDocument();
-    expect(screen.getByText(/Data de início:/)).toBeInTheDocument();
+    expect(screen.getByText(/Data de distribuição:/)).toBeInTheDocument();
     expect(screen.getByText(/Movimentações:/)).toBeInTheDocument();
 
     expect(container.firstChild).toMatchSnapshot();
@@ -39,7 +39,7 @@ describe("<DetailSession />", () => {
   it("should format start date correctly", () => {
     render(<DetailSession lawsuit={mockLawsuit} />);
 
-    const dateItem = screen.getByText(/Data de início:/);
+    const dateItem = screen.getByText(/Data de distribuição:/);
     expect(dateItem.textContent).toMatch(/\d{2}\/\d{2}\/\d{4}/);
   });
 
