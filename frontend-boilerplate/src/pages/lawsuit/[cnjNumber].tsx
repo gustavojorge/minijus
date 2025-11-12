@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Text } from "@radix-ui/themes";
 
 import { Header, SearchBar, MovementSession, PartySession, DetailSession, LawyerSession, LawsuitHeader, OfferModal } from "@/components";
+import type { Filters } from "@/components/common/search-bar/components";
 import { useExperiment } from "@/hooks/useExperiment";
 import { useNextPlanModal } from "@/hooks/useNextPlanModal";
 import { SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
@@ -42,15 +43,20 @@ export default function LawsuitDetailPage() {
     ? (data?.searchLawsuitsQuery || []).find((l) => stripMarkTags(l.number) === cnj) || null
     : data?.searchLawsuitsQuery?.[0] || null;
 
-  const handleSearch = (searchCnj: string, court: "ALL" | "TJAL" | "TJCE") => {
-    const query: { q?: string; court?: string } = {};
+  const handleSearch = (searchCnj: string, filters?: Filters) => {
+    const query: { q?: string; court?: string; date?: string; dateOp?: string } = {};
     
     if (searchCnj) {
       query.q = stripMarkTags(searchCnj);
     }
     
-    if (court !== "ALL") {
-      query.court = court;
+    if (filters?.court && filters.court !== "ALL") {
+      query.court = filters.court;
+    }
+
+    if (filters?.date) {
+      query.date = filters.date.date;
+      query.dateOp = filters.date.operator;
     }
 
     router.push({

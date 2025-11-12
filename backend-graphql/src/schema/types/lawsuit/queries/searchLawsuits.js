@@ -1,26 +1,37 @@
 import { GraphQLList, GraphQLString } from 'graphql';
 
-import { LawsuitType } from '../typeDefs.js';
+import { LawsuitType, FiltersInputType } from '../typeDefs.js';
 import searcherAPI from '../../../../apis/searcherAPI.js';
 import { transformLawsuit } from '../utils/transformers.js';
 
 export const searchLawsuitsQuery = {
   type: new GraphQLList(LawsuitType),
   args: {
-    court: { type: GraphQLString }, 
     query: { type: GraphQLString }, // Generic query (CNJ, phrase, or text) - searcher identifies the type
+    filters: { type: FiltersInputType }, // Filters (court and/or date)
   },
-  resolve: async (root, { court, query: queryParam }) => {
+  resolve: async (root, { query: queryParam, filters: filtersParam }) => {
     const searchQuery = queryParam || '';
 
-    // Build filters
+    // Build filters object
     const filters = {};
-    if (court) {
-      filters.court = court.toUpperCase();
+    
+    // Add court filter if provided
+    if (filtersParam?.court) {
+      filters.court = filtersParam.court.toUpperCase();
+    }
+
+    // Add date filter if provided
+    if (filtersParam?.date) {
+      filters.date = {
+        date: filtersParam.date.date,
+        operator: filtersParam.date.operator,
+      };
     }
 
     // If no query and no filters, return empty results
-    if (!searchQuery && !filters.court) {
+    const hasFilters = filters.court || filters.date;
+    if (!searchQuery && !hasFilters) {
       return [];
     }
 

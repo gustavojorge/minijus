@@ -3,19 +3,34 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 
 import { Header, LawsuitsSearchSession, BackButton, ErrorSection, NotFoundSection } from "@/components";
+import type { Filters } from "@/components/common/search-bar/components";
 import { getSearchVariables } from "@/utils/searchVariables";
 import { SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
 import styles from "@/styles/SearchResults.module.css";
 
 export default function SearchResultsPage() {
   const router = useRouter();
-  const { q, court } = router.query;
+  const { q, court, date, dateOp } = router.query;
 
   const searchQuery = typeof q === "string" ? q : "";
+  
+  // Build filters from URL params
+  const filters: Filters = {};
   const courtFilter = typeof court === "string" ? court : undefined;
-  const variables = getSearchVariables(searchQuery, courtFilter);
+  if (courtFilter && courtFilter !== "ALL") {
+    filters.court = courtFilter as "TJAL" | "TJCE";
+  }
+  if (date && dateOp) {
+    filters.date = {
+      date: date as string,
+      operator: dateOp as "<" | "=" | ">",
+    };
+  }
 
-  const shouldSkip = !searchQuery && (!courtFilter || courtFilter === "ALL");
+  const variables = getSearchVariables(searchQuery, filters);
+
+  const hasFilters = filters.court || filters.date;
+  const shouldSkip = !searchQuery && !hasFilters;
 
   const { data, loading, error } = useQuery(SEARCH_LAWSUITS_QUERY, {
     variables,
@@ -24,7 +39,7 @@ export default function SearchResultsPage() {
 
   const lawsuits = data?.searchLawsuitsQuery || [];
   const hasResults = lawsuits.length > 0;
-  const hasSearchParams = searchQuery || (courtFilter && courtFilter !== "ALL");
+  const hasSearchParams = searchQuery || hasFilters;
   const showNotFound = !loading && !error && hasSearchParams && !hasResults;
 
   const getErrorMessage = () => {

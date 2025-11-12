@@ -1,8 +1,6 @@
 import createHTTPClient from './httpClient.js';
 
-// Use environment variable or default to Docker service name
-// For local development, use http://localhost:8100
-// For Docker, use http://searcher-api:8000
+
 const BASE_URL = process.env.SEARCHER_API_BASE_URL || 'http://searcher-api:8000';
 const TIMEOUT = Number(process.env.REQUEST_TIMEOUT_MS) || 10000;
 
@@ -25,14 +23,30 @@ class SearcherAPI {
    * @param {string} params.query - Search query (CNJ number or text)
    * @param {Object} params.filters - Optional filters
    * @param {string} params.filters.court - Court filter (TJAL, TJCE)
+   * @param {Object} params.filters.date - Date filter
+   * @param {string} params.filters.date.date - Date value (YYYY-MM-DD)
+   * @param {string} params.filters.date.operator - Date operator ("<", "=", ">")
    * @param {number} params.limit - Maximum number of results
    * @param {number} params.offset - Offset for pagination
    * @returns {Promise} Response from searcher API
    */
   async searchLawsuits({ query, filters = {}, limit = 100, offset = 0 }) {
+    const requestFilters = {};
+    
+    if (filters.court) {
+      requestFilters.court = filters.court;
+    }
+    
+    if (filters.date) {
+      requestFilters.date = {
+        date: filters.date.date,
+        operator: filters.date.operator,
+      };
+    }
+
     const requestBody = {
       query,
-      filters: filters.court ? { court: filters.court } : {},
+      filters: requestFilters,
       limit,
       offset,
     };
@@ -42,16 +56,12 @@ class SearcherAPI {
       return response.data;
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         throw new Error(
           `Searcher API error: ${error.response.status} - ${error.response.data?.detail || error.message}`
         );
       } else if (error.request) {
-        // The request was made but no response was received
         throw new Error('Searcher API is not responding. Please check if the service is running.');
       } else {
-        // Something happened in setting up the request that triggered an Error
         throw new Error(`Error calling Searcher API: ${error.message}`);
       }
     }

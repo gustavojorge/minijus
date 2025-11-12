@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const SEARCH_LAWSUITS_QUERY = gql`
-  query SearchLawsuits($court: String, $query: String) {
-    searchLawsuitsQuery(court: $court, query: $query) {
+  query SearchLawsuits($query: String, $filters: FiltersInput) {
+    searchLawsuitsQuery(query: $query, filters: $filters) {
       id
       number
       parties {

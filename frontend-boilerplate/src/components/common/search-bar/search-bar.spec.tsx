@@ -23,18 +23,23 @@ jest.mock("./components", () => ({
       Buscar
     </button>
   ),
-  SelectSearchBar: ({ value, onChange, disabled }: any) => (
-    <select
-      data-testid="select-search-bar"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
+  FiltersButton: ({ onClick, hasActiveFilters, disabled }: any) => (
+    <button
+      data-testid="filters-button"
+      onClick={onClick}
       disabled={disabled}
-      aria-label="Filtrar por tribunal"
+      aria-label="Abrir filtros de busca"
     >
-      <option value="ALL">Tribunal</option>
-      <option value="TJAL">TJAL</option>
-      <option value="TJCE">TJCE</option>
-    </select>
+      Filtros
+    </button>
+  ),
+  FiltersModal: ({ open, onOpenChange, filters, onApplyFilters }: any) => (
+    open ? (
+      <div data-testid="filters-modal">
+        <button onClick={() => onOpenChange(false)}>Fechar</button>
+        <button onClick={() => onApplyFilters(filters)}>Aplicar</button>
+      </div>
+    ) : null
   ),
 }));
 
@@ -52,7 +57,7 @@ describe("<SearchBar />", () => {
     expect(screen.getByLabelText("Buscar processos")).toBeInTheDocument();
     expect(screen.getByTestId("input-search-bar")).toBeInTheDocument();
     expect(screen.getByTestId("button-search-bar")).toBeInTheDocument();
-    expect(screen.getByTestId("select-search-bar")).toBeInTheDocument();
+    expect(screen.getByTestId("filters-button")).toBeInTheDocument();
 
     expect(container.firstChild).toMatchSnapshot();
   });
@@ -68,43 +73,11 @@ describe("<SearchBar />", () => {
     await user.click(button);
 
     await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("1234567-89.2021.8.06.0001", "ALL");
+      expect(mockOnSearch).toHaveBeenCalledWith("1234567-89.2021.8.06.0001", undefined);
     });
   });
 
-  it("should call onSearch with court filter when only court is selected", async () => {
-    const user = userEvent.setup();
-    render(<SearchBar onSearch={mockOnSearch} />);
-
-    const select = screen.getByTestId("select-search-bar");
-    const button = screen.getByTestId("button-search-bar");
-
-    await user.selectOptions(select, "TJAL");
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("", "TJAL");
-    });
-  });
-
-  it("should call onSearch with both CNJ and court when both are provided", async () => {
-    const user = userEvent.setup();
-    render(<SearchBar onSearch={mockOnSearch} />);
-
-    const input = screen.getByTestId("input-search-bar");
-    const select = screen.getByTestId("select-search-bar");
-    const button = screen.getByTestId("button-search-bar");
-
-    await user.type(input, "1234567-89.2021.8.06.0001");
-    await user.selectOptions(select, "TJCE");
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("1234567-89.2021.8.06.0001", "TJCE");
-    });
-  });
-
-  it("should not call onSearch when form is empty and court is ALL", async () => {
+  it("should not call onSearch when form is empty and no filters", async () => {
     const user = userEvent.setup();
     render(<SearchBar onSearch={mockOnSearch} />);
 
@@ -123,7 +96,7 @@ describe("<SearchBar />", () => {
     expect(button).toBeDisabled();
   });
 
-  it("should disable button when form is empty and court is ALL", () => {
+  it("should disable button when form is empty and no filters", () => {
     render(<SearchBar onSearch={mockOnSearch} />);
 
     const button = screen.getByTestId("button-search-bar");

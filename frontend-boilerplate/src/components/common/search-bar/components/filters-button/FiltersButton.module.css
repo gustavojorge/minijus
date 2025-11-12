@@ -1,0 +1,37 @@
+.filtersButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  height: 2rem;
+  border-radius: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .filtersButton {
+    height: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .filtersButton {
+    height: 3.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .filtersButton {
+    height: 3.5rem;
+  }
+}
+
+.filtersButton:hover {
+  background-color: #e5e7eb;
+  cursor: pointer;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+}
+

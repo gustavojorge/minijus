@@ -1,5 +1,6 @@
 import {
   GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLID,
   GraphQLString,
   GraphQLNonNull,
@@ -51,6 +52,24 @@ export const LawsuitType = new GraphQLObjectType({
     judge: { type: GraphQLString },
     value: { type: GraphQLFloat },
     lawyers: { type: new GraphQLList(LawyerType) },
+  }),
+});
+
+// DateFilterInputType: Input type for date filter
+export const DateFilterInputType = new GraphQLInputObjectType({
+  name: 'DateFilterInput',
+  fields: () => ({
+    date: { type: new GraphQLNonNull(GraphQLString) },
+    operator: { type: new GraphQLNonNull(GraphQLString) }, // "<", "=", or ">"
+  }),
+});
+
+// FiltersInputType: Input type for filters
+export const FiltersInputType = new GraphQLInputObjectType({
+  name: 'FiltersInput',
+  fields: () => ({
+    court: { type: GraphQLString },
+    date: { type: DateFilterInputType },
   }),
 });
 

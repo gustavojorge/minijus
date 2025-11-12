@@ -16,6 +16,14 @@
   align-items: stretch;
 }
 
+@media (min-width: 768px) {
+  .searchControls {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+}
+
 .searchWrapper {
   position: relative;
   width: 100%;

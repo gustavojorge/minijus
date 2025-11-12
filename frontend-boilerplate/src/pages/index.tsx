@@ -7,21 +7,27 @@ import {
   FeaturesSection,
   HeaderSession,
 } from "@/components";
+import type { Filters } from "@/components/common/search-bar/components";
 import { stripMarkTags } from "@/utils/highlight";
 import styles from "@/styles/Index.module.css";
 
 export default function Search() {
   const router = useRouter();
 
-  const handleSearch = (cnj: string, court: "ALL" | "TJAL" | "TJCE") => {
-    const query: { q?: string; court?: string } = {};
+  const handleSearch = (cnj: string, filters?: Filters) => {
+    const query: { q?: string; court?: string; date?: string; dateOp?: string } = {};
     
     if (cnj) {
       query.q = stripMarkTags(cnj);
     }
     
-    if (court !== "ALL") {
-      query.court = court;
+    if (filters?.court && filters.court !== "ALL") {
+      query.court = filters.court;
+    }
+
+    if (filters?.date) {
+      query.date = filters.date.date;
+      query.dateOp = filters.date.operator;
     }
 
     router.push({
