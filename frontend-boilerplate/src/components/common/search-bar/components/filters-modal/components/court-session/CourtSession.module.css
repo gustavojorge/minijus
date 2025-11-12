@@ -1,0 +1,14 @@
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  color: #374151;
+}
+
+.select {
+  width: 100%;
+}
+

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Button, Dialog, Text, Select, TextField } from "@radix-ui/themes";
+import { Dialog } from "@radix-ui/themes";
 
+import { CourtSession, DataSession, FooterSession } from "./components";
 import styles from "./FiltersModal.module.css";
 
 type TribunalOption = "ALL" | "TJAL" | "TJCE";
@@ -74,62 +75,18 @@ export function FiltersModal({
         <Dialog.Title className={styles.title}>Filtros de busca</Dialog.Title>
 
         <div className={styles.modalBody}>
-          <div className={styles.filterSection}>
-            <Text size="3" weight="medium" className={styles.label}>
-              Tribunal
-            </Text>
-            <Select.Root
-              value={court}
-              onValueChange={(value) => setCourt(value as TribunalOption)}
-            >
-              <Select.Trigger className={styles.select} />
-              <Select.Content>
-                <Select.Item value="ALL">Todos os tribunais</Select.Item>
-                <Select.Item value="TJAL">TJAL</Select.Item>
-                <Select.Item value="TJCE">TJCE</Select.Item>
-              </Select.Content>
-            </Select.Root>
-          </div>
-
-          <div className={styles.filterSection}>
-            <Text size="3" weight="medium" className={styles.label}>
-              Data de distribuição
-            </Text>
-            <div className={styles.dateFilter}>
-              <Select.Root
-                value={dateOperator}
-                onValueChange={(value) => setDateOperator(value as DateOperator)}
-              >
-                <Select.Trigger className={styles.operatorSelect} />
-                <Select.Content>
-                  <Select.Item value="=">Igual a</Select.Item>
-                  <Select.Item value="<">Antes de</Select.Item>
-                  <Select.Item value=">">Depois de</Select.Item>
-                </Select.Content>
-              </Select.Root>
-              <TextField.Root
-                type="date"
-                value={dateValue}
-                onChange={(e) => setDateValue(e.target.value)}
-                placeholder="Selecione a data"
-                className={styles.dateInput}
-              />
-            </div>
-          </div>
-
-          <div className={styles.modalActions}>
-            <Button
-              variant="soft"
-              color="gray"
-              onClick={handleClear}
-              disabled={!hasActiveFilters}
-            >
-              Limpar
-            </Button>
-            <Button onClick={handleApply} color="jade">
-              Aplicar filtros
-            </Button>
-          </div>
+          <CourtSession value={court} onChange={setCourt} />
+          <DataSession
+            operator={dateOperator}
+            date={dateValue}
+            onOperatorChange={setDateOperator}
+            onDateChange={setDateValue}
+          />
+          <FooterSession
+            hasActiveFilters={hasActiveFilters}
+            onClear={handleClear}
+            onApply={handleApply}
+          />
         </div>
       </Dialog.Content>
     </Dialog.Root>
