@@ -45,12 +45,144 @@ services:
       - 5432:5432
     volumes:
       - ./db-init:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 20s
+    networks:
+      - app-network
+
+  # Kafka infrastructure
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 172.17.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_NETWORK:PLAINTEXT,LOCALHOST:PLAINTEXT
+      KAFKA_LISTENERS: "DOCKER_NETWORK://:9092,LOCALHOST://:29092"
+      KAFKA_ADVERTISED_LISTENERS: "DOCKER_NETWORK://kafka:9092,LOCALHOST://127.0.0.1:29092"
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_NETWORK
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app-network
+
+  kafka-web:
+    image: tchiotludo/akhq
+    container_name: kafka-web
+    ports:
+      - "8081:8080"
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka:9092"
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+
+  # Pipeline services
+  initial-payload-producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_DIR: initial_payload_producer
+    container_name: initial-payload-producer
+    command:
+      - poetry
+      - run
+      - python
+      - main.py
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+
+  parser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_DIR: parser
+    container_name: parser
+    command:
+      - poetry
+      - run
+      - python
+      - main.py
+    depends_on:
+      - kafka
+    volumes:
+      - ./parser/logs:/parser/logs
+    networks:
+      - app-network
+
+  classifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_DIR: classifier
+    container_name: classifier
+    command:
+      - poetry
+      - run
+      - python
+      - main.py
+    depends_on:
+      - kafka
+    volumes:
+      - ./classifier/logs:/classifier/logs
+    networks:
+      - app-network
+
+  db_sync:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_DIR: db_sync
+    container_name: db_sync
+    command:
+      - poetry
+      - run
+      - python
+      - main.py
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      CLASSIFIED_TOPIC: lawsuit_classified
+      PG_HOST: postgres
+      PG_PORT: "5432"
+      PG_USER: ${POSTGRES_USER}
+      PG_PASSWORD: ${POSTGRES_PASSWORD}
+      PG_DATABASE: ${POSTGRES_DB}
+      RUN_MIGRATIONS: "true"
+    volumes:
+      - ./db_sync/logs:/db_sync/logs
     networks:
       - app-network
 
@@ -73,12 +205,9 @@ services:
     container_name: indexer-api
     environment:
       - ES_HOST=http://elasticsearch:9200
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - INITIAL_LOAD_ON_START=true
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - CLASSIFIED_TOPIC=lawsuit_classified
+      - INITIAL_LOAD_ON_START=false
       - LOG_FILE=logs/app.log
       - LOG_LEVEL=INFO
     ports:
@@ -86,8 +215,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
+      kafka:
+        condition: service_started
     restart: unless-stopped
     volumes:
       - ./indexer/logs:/app/logs
@@ -163,6 +292,7 @@ services:
 
 volumes:
   esdata:
+  postgres_data:
 
 networks:
   app-network:

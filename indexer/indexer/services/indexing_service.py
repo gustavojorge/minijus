@@ -154,3 +154,26 @@ def delete_document_service(doc_id: str) -> Dict[str, Any]:
         return {"id": doc_id, "deleted": False, "result": "not_found"}
     logger.info(f"Delete: Document id={doc_id} deleted successfully.")
     return {"id": doc_id, "deleted": True, "result": resp.get("result")}
+
+def index_from_kafka_service(record: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Index a single document from Kafka (classified topic).
+    The record format is the same as the knowledge base format.
+    """
+    ensure_index()
+    try:
+        logger.info(f"Validation Phase: Validating document {record.get('number')} for indexing from Kafka.")
+        validate_raw_for_mapping(record, origin='http_request')
+
+        logger.info(f"Enrichment Phase: Transforming and normalizing document {record.get('number')}.")
+        es_doc = enrichment(record, origin="http_request")
+    except ValidationError as e:
+        return {"skipped": 1, "reason": str(e)}
+
+    court_instance = record.get("courtInstance")
+    number = es_doc.get("number")
+    _id = f"{number}-{court_instance}" if court_instance is not None else number
+    resp = index_single(es_doc, _id=_id)
+
+    logger.info(f"Index Phase: Document indexed successfully from Kafka id={_id}")
+    return {"id": _id, "result": resp.get("result"), "skipped": 0}

@@ -1,0 +1,35 @@
+{
+  "tribunal": "TJSP",
+  "classe": "Ação Ordinária",
+  "area": "Cível",
+  "assunto": "Exploração do trabalho infantil",
+  "data_de_distribuicao": "2023-05-10",
+  "juiz": "Dr. João Silva",
+  "valor_da_acao": 50000.75,
+  "segredo_justica": false,
+  "existe": true,
+  "partes_do_processo": [
+    {
+      "nome": "Maria Souza",
+      "papel": "Autor",
+      "advogado(as)": ["Dr. Carlos Almeida"]
+    },
+    {
+      "nome": "Empresa XYZ Ltda.",
+      "papel": "Réu",
+      "advogado(as)": ["Dra. Ana Pereira"]
+    }
+  ],
+  "lista_das_movimentacoes": [
+    {
+      "data": "2023-05-11",
+      "movimento": "Distribuído por sorteio"
+    },
+    {
+      "data": "2023-05-15",
+      "movimento": "Citação expedida"
+    }
+  ],
+  "instancia": 1,
+  "numero_do_processo": "1277567-49.2023.8.09.0001"
+}

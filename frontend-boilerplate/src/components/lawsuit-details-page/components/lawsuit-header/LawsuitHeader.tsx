@@ -22,9 +22,9 @@ export function LawsuitHeader({ number, court, startDate }: LawsuitHeaderProps) 
         )}
       </h1>
       {startDate && (
-        <Text size="3" color="gray" className={styles.date}>
+      <Text size="3" color="gray" className={styles.date}>
           Distribuído em {formatDate(startDate)}
-        </Text>
+      </Text>
       )}
     </div>
   );
