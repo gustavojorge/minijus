@@ -62,7 +62,7 @@ export const searchLawsuitsQuery = {
               status: collectionResponse.status,
               taskId: collectionResponse.task_id,
               cnj: collectionResponse.cnj,
-              message: collectionResponse.message || 'Data not in cache. Collection queued. Please check again later.',
+              message: collectionResponse.message || 'O processo não foi encontrado no momento. Iniciamos a coleta dos dados e ele estará disponível em breve.',
             }];
           }
           
