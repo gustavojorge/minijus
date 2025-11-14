@@ -1,0 +1,111 @@
+services:
+  api:
+    build: .
+    container_name: data_colection_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./logs:/app/logs  
+    environment:
+      # Configurações de Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=logs/app.log
+      
+      # Configurações da aplicação
+      - ENVIRONMENT=production
+      
+      # Configurações do MongoDB (para Docker)
+      - MONGODB_URI=mongodb://root:example@mongo:27017/data_collection?authSource=admin
+      - MONGODB_DATABASE=data_collection
+      
+      # Configurações do Redis
+      - REDIS_URL=redis://redis:6379/0
+      
+      # Configurações de crawler
+      - CRAWLER_TIMEOUT=30
+      - BROWSER_HEADLESS=true
+      - BROWSER_SLOW_MO=0
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: data_collection_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  worker:
+    build: .
+    container_name: data_collection_worker
+    command: poetry run celery -A app.workers.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    environment:
+      # Configurações de Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=logs/app.log
+      
+      # Configurações da aplicação
+      - ENVIRONMENT=production
+      
+      # Configurações do MongoDB (para Docker)
+      - MONGODB_URI=mongodb://root:example@mongo:27017/data_collection?authSource=admin
+      - MONGODB_DATABASE=data_collection
+      
+      # Configurações do Redis
+      - REDIS_URL=redis://redis:6379/0
+      
+      # Configurações de crawler
+      - CRAWLER_TIMEOUT=30
+      - BROWSER_HEADLESS=true
+      - BROWSER_SLOW_MO=0
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: docker.io/library/mongo:8.0
+    container_name: data_collection_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: data_collection
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "root", "--password", "example", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: data_collection_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:
+  redis_data:
