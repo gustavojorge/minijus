@@ -55,6 +55,43 @@ services:
     networks:
       - app-network
 
+  # Data Collection API infrastructure
+  mongo:
+    image: docker.io/library/mongo:8.0
+    container_name: data_collection_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: data_collection
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "root", "--password", "example", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    networks:
+      - app-network
+
+  data_collection_redis:
+    image: redis:7-alpine
+    container_name: data_collection_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
+
   # Kafka infrastructure
   zookeeper:
     image: zookeeper
@@ -81,6 +118,12 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_NETWORK
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
     networks:
       - app-network
 
@@ -115,7 +158,8 @@ services:
       - python
       - main.py
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -132,11 +176,13 @@ services:
       - python
       - main.py
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     volumes:
       - ./parser/logs:/parser/logs
     networks:
       - app-network
+    restart: unless-stopped
 
   classifier:
     build:
@@ -151,11 +197,13 @@ services:
       - python
       - main.py
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     volumes:
       - ./classifier/logs:/classifier/logs
     networks:
       - app-network
+    restart: unless-stopped
 
   db_sync:
     build:
@@ -170,8 +218,10 @@ services:
       - python
       - main.py
     depends_on:
-      - kafka
-      - postgres
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       CLASSIFIED_TOPIC: lawsuit_classified
@@ -199,6 +249,64 @@ services:
     networks:
       - app-network
 
+  # Data Collection API services
+  data_collection-api:
+    build: ./data_collection-api
+    container_name: data_collection_api
+    ports:
+      - "8200:8000"
+    volumes:
+      - ./data_collection-api:/app
+      - ./data_collection-api/logs:/app/logs
+    environment:
+      - LOG_LEVEL=INFO
+      - LOG_FILE=logs/app.log
+      - ENVIRONMENT=production
+      - MONGODB_URI=mongodb://root:example@mongo:27017/data_collection?authSource=admin
+      - MONGODB_DATABASE=data_collection
+      - REDIS_URL=redis://data_collection_redis:6379/0
+      - CRAWLER_TIMEOUT=30
+      - BROWSER_HEADLESS=true
+      - BROWSER_SLOW_MO=0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      data_collection_redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  data_collection_worker:
+    build: ./data_collection-api
+    container_name: data_collection_worker
+    command: poetry run celery -A app.workers.celery_app worker --loglevel=info
+    volumes:
+      - ./data_collection-api:/app
+      - ./data_collection-api/logs:/app/logs
+    environment:
+      - LOG_LEVEL=INFO
+      - LOG_FILE=logs/app.log
+      - ENVIRONMENT=production
+      - MONGODB_URI=mongodb://root:example@mongo:27017/data_collection?authSource=admin
+      - MONGODB_DATABASE=data_collection
+      - REDIS_URL=redis://data_collection_redis:6379/0
+      - CRAWLER_TIMEOUT=30
+      - BROWSER_HEADLESS=true
+      - BROWSER_SLOW_MO=0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      data_collection_redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
   # Backend services (searcher project)
   indexer-api:
     build: ./indexer
@@ -216,7 +324,7 @@ services:
       elasticsearch:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
     volumes:
       - ./indexer/logs:/app/logs
@@ -263,12 +371,14 @@ services:
     environment:
       - EXTERNAL_API_BASE_URL=http://mock-api:9777
       - SEARCHER_API_BASE_URL=http://searcher-api:8000
+      - DATA_COLLECTION_API_BASE_URL=http://data_collection-api:8000
     volumes:
       - ./backend-graphql:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
       - mock-api
       - searcher-api
+      - data_collection-api
     networks:
       - app-network
 
@@ -280,7 +390,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000
+      - NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000/graphql
     volumes:
       - ./frontend-boilerplate:/usr/src/app
       - /usr/src/app/node_modules
@@ -293,6 +403,8 @@ services:
 volumes:
   esdata:
   postgres_data:
+  mongo_data:
+  redis_data:
 
 networks:
   app-network:

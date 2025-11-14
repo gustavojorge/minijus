@@ -83,3 +83,29 @@ export const RegisterLastInteractionResponseType = new GraphQLObjectType({
   }),
 });
 
+// SearchResultType: Union type for search results (either Lawsuit or CollectionQueued)
+// Note: __typename is automatically available in GraphQL, no need to define it
+export const SearchResultType = new GraphQLObjectType({
+  name: 'SearchResult',
+  fields: () => ({
+    // Lawsuit fields
+    id: { type: GraphQLID },
+    number: { type: GraphQLString },
+    parties: { type: new GraphQLList(PartyType) },
+    court: { type: GraphQLString },
+    startDate: { type: GraphQLString },
+    movements: { type: new GraphQLList(MovementType) },
+    nature: { type: GraphQLString },
+    kind: { type: GraphQLString },
+    subject: { type: GraphQLString },
+    judge: { type: GraphQLString },
+    value: { type: GraphQLFloat },
+    lawyers: { type: new GraphQLList(LawyerType) },
+    // CollectionQueued fields
+    status: { type: GraphQLString },
+    taskId: { type: GraphQLString },
+    cnj: { type: GraphQLString },
+    message: { type: GraphQLString },
+  }),
+});
+

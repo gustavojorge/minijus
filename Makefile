@@ -31,8 +31,12 @@ run-kafka:
 run-database:
 	@$(DOCKER_COMPOSE) up -d postgres pgadmin
 
+.PHONY: run-data-collection-infra
+run-data-collection-infra:
+	@$(DOCKER_COMPOSE) up -d mongo data_collection_redis
+
 .PHONY: run-infra
-run-infra: run-kafka run-database run-elastic
+run-infra: run-kafka run-database run-elastic run-data-collection-infra
 
 .PHONY: run-pipeline-apps
 run-pipeline-apps:
@@ -41,6 +45,10 @@ run-pipeline-apps:
 .PHONY: run-backend-services
 run-backend-services:
 	@$(DOCKER_COMPOSE) up -d indexer-api searcher-api
+
+.PHONY: run-data-collection-services
+run-data-collection-services:
+	@$(DOCKER_COMPOSE) up -d data_collection-api data_collection_worker
 
 .PHONY: run-app-services
 run-app-services:
@@ -59,10 +67,28 @@ build-all:
 .PHONY: start-full
 start-full: build-all run-infra
 	@echo "Aguardando infraestrutura ficar pronta..."
-	@sleep 10
+	@echo "Aguardando Kafka ficar totalmente pronto (pode levar até 60 segundos)..."
+	@sleep 20
+	@echo "Verificando se Kafka está pronto..."
+	@timeout=120; \
+	while [ $$timeout -gt 0 ]; do \
+		if docker exec kafka /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1; then \
+			echo "✅ Kafka está pronto!"; \
+			break; \
+		fi; \
+		echo "Aguardando Kafka... ($$timeout segundos restantes)"; \
+		sleep 5; \
+		timeout=$$((timeout - 5)); \
+	done; \
+	if [ $$timeout -le 0 ]; then \
+		echo "⚠️  Kafka pode não estar totalmente pronto, mas continuando..."; \
+	fi
+	@echo "Iniciando serviços de coleta de dados..."
+	@$(DOCKER_COMPOSE) up -d data_collection-api data_collection_worker
+	@sleep 5
 	@echo "Iniciando pipeline..."
 	@$(DOCKER_COMPOSE) up -d parser classifier db_sync
-	@sleep 5
+	@sleep 10
 	@echo "Produzindo mensagem de exemplo..."
 	@$(DOCKER_COMPOSE) up initial-payload-producer
 	@sleep 5
@@ -76,6 +102,7 @@ start-full: build-all run-infra
 	@echo "Acesse:"
 	@echo "  - Frontend: http://localhost:3000"
 	@echo "  - Backend GraphQL: http://localhost:4000"
+	@echo "  - Data Collection API: http://localhost:8200"
 	@echo "  - Kafka Web UI: http://localhost:8081"
 	@echo "  - Kibana: http://localhost:5601"
 
@@ -94,6 +121,10 @@ logs-indexer:
 .PHONY: logs-pipeline
 logs-pipeline:
 	@$(DOCKER_COMPOSE) logs -f parser classifier db_sync
+
+.PHONY: logs-data-collection
+logs-data-collection:
+	@$(DOCKER_COMPOSE) logs -f data_collection-api data_collection_worker
 
 .PHONY: test-flow
 test-flow:

@@ -2,10 +2,11 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import { Header, LawsuitsSearchSession, BackButton, ErrorSection, NotFoundSection } from "@/components";
+import { Header, LawsuitsSearchSession, BackButton, ErrorSection, NotFoundSection, CollectionQueuedSection } from "@/components";
 import type { Filters } from "@/components/common/search-bar/components";
 import { getSearchVariables } from "@/utils/searchVariables";
 import { SEARCH_LAWSUITS_QUERY } from "@/graphql/queries/lawsuit";
+import type { Lawsuit } from "@/types/lawsuit";
 import styles from "@/styles/SearchResults.module.css";
 
 export default function SearchResultsPage() {
@@ -37,10 +38,21 @@ export default function SearchResultsPage() {
     skip: shouldSkip,
   });
 
-  const lawsuits = data?.searchLawsuitsQuery || [];
+  const results: Lawsuit[] = data?.searchLawsuitsQuery || [];
+  
+  // Check if we have a collection queued response
+  const collectionQueued = results.find(
+    (result) => result.__typename === "CollectionQueued" || result.status === "queued"
+  );
+  
+  // Filter out collection queued responses to get actual lawsuits
+  const lawsuits = results.filter(
+    (result) => result.__typename === "Lawsuit" || (result.id && result.number)
+  );
+  
   const hasResults = lawsuits.length > 0;
   const hasSearchParams = searchQuery || hasFilters;
-  const showNotFound = !loading && !error && hasSearchParams && !hasResults;
+  const showNotFound = !loading && !error && hasSearchParams && !hasResults && !collectionQueued;
 
   const getErrorMessage = () => {
     if (!error) return undefined;
@@ -70,6 +82,13 @@ export default function SearchResultsPage() {
           <BackButton />
 
           {error && <ErrorSection message={getErrorMessage()} />}
+
+          {collectionQueued && (
+            <CollectionQueuedSection
+              message={collectionQueued.message || "Processo em coleta. Por favor, aguarde alguns minutos e tente novamente."}
+              cnj={collectionQueued.cnj}
+            />
+          )}
 
           {showNotFound && <NotFoundSection />}
 

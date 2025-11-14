@@ -35,8 +35,19 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
+// Use backend-graphql service name when running in Docker (SSR), 
+// or localhost when running in browser (client-side)
+const getGraphQLUri = () => {
+  if (typeof window === "undefined") {
+    // Server-side: use Docker service name
+    return process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://backend-graphql:4000/graphql";
+  }
+  // Client-side: use localhost (from browser perspective)
+  return process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:4000/graphql";
+};
+
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+  uri: getGraphQLUri(),
 });
 
 function createApolloClient() {

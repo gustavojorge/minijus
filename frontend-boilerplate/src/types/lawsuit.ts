@@ -15,8 +15,9 @@ export interface Movement {
 }
 
 export interface Lawsuit {
-  id: string;
-  number: string;
+  __typename?: string;
+  id?: string;
+  number?: string;
   parties?: Party[];
   court?: string;
   startDate?: string;
@@ -27,5 +28,10 @@ export interface Lawsuit {
   judge?: string;
   value?: number;
   lawyers?: Lawyer[];
+  // CollectionQueued fields
+  status?: string;
+  taskId?: string;
+  cnj?: string;
+  message?: string;
 }
 
