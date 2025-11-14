@@ -22,7 +22,7 @@ export function CollectionQueuedSection({ message, cnj }: CollectionQueuedSectio
           Processo em coleta
         </Text>
         <Text size="3" color="gray" className={styles.message}>
-          {message || "O processo não foi encontrado no momento. Iniciamos a coleta dos dados e ele estará disponível em breve."}
+          {"O processo não foi encontrado no momento. Iniciamos a coleta dos dados e ele estará disponível em breve."}
         </Text>
         {cnj && (
           <Text size="2" color="gray" className={styles.cnj}>
