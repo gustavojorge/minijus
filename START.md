@@ -37,11 +37,31 @@ docker compose up -d zookeeper kafka kafka-web postgres pgadmin elasticsearch ki
 
 **Aguarde ~15-20 segundos** para todos os serviços ficarem prontos.
 
-### 2. Verificar se o Kafka está funcionando
+### 2. Criar Tópicos Kafka com 3 Partições
+
+O pipeline está configurado para usar 3 partições por tópico, permitindo processamento paralelo:
+
+```bash
+make create-kafka-topics
+```
+
+Ou manualmente:
+```bash
+./scripts/create-kafka-topics.sh
+```
+
+Este script cria/atualiza os tópicos:
+- `lawsuit_raw` (3 partições)
+- `lawsuit_structured` (3 partições)
+- `lawsuit_classified` (3 partições)
+
+### 3. Verificar se o Kafka está funcionando
 
 Acesse o Kafka Web UI: http://localhost:8081
 
-### 3. Iniciar os Serviços de Coleta de Dados
+Você deve ver os 3 tópicos listados, cada um com 3 partições.
+
+### 4. Iniciar os Serviços de Coleta de Dados
 
 ```bash
 make run-data-collection-services
@@ -58,15 +78,24 @@ Isso iniciará:
 
 **Aguarde alguns segundos** para os serviços ficarem prontos.
 
-### 4. Iniciar o Pipeline
+### 5. Iniciar o Pipeline (com Escalabilidade)
+
+O pipeline está configurado para rodar com 3 instâncias de `parser` e `classifier` para aproveitar o paralelismo das 3 partições:
 
 ```bash
-make run-pipeline-apps
+make scale-pipeline
 ```
 
 Ou manualmente:
 ```bash
-docker compose up -d parser classifier db_sync
+docker compose up -d --scale parser=3 --scale classifier=3 parser classifier db_sync
+```
+
+**Nota:** Cada instância de `parser` e `classifier` processará uma partição diferente, permitindo processamento paralelo de até 3 mensagens simultaneamente.
+
+Para iniciar apenas 1 instância de cada:
+```bash
+make run-pipeline-apps
 ```
 
 Isso iniciará:
@@ -74,7 +103,7 @@ Isso iniciará:
 - **classifier**: Consome `lawsuit_structured` e publica em `lawsuit_classified`
 - **db_sync**: Consome `lawsuit_classified` e salva no PostgreSQL
 
-### 5. Produzir uma Mensagem de Exemplo
+### 6. Produzir uma Mensagem de Exemplo
 
 ```bash
 make produce-example-message
@@ -90,7 +119,7 @@ Isso irá:
 - Publicar no tópico `lawsuit_raw`
 - O pipeline processará automaticamente: `raw → structured → classified`
 
-### 6. Iniciar os Serviços Backend
+### 7. Iniciar os Serviços Backend
 
 ```bash
 make run-backend-services
@@ -107,7 +136,7 @@ Isso iniciará:
 
 **Aguarde alguns segundos** para o indexer processar a mensagem.
 
-### 7. Iniciar os Serviços de Aplicação
+### 8. Iniciar os Serviços de Aplicação
 
 ```bash
 make run-app-services
@@ -259,6 +288,58 @@ docker compose down -v
    ↓
 12. Próxima busca: processo encontrado! ✅
 ```
+
+## 📈 Escalabilidade do Pipeline
+
+O pipeline está configurado para escalabilidade horizontal usando Kafka com múltiplas partições:
+
+### Configuração Atual
+
+- **3 partições por tópico**: Permite até 3 consumidores paralelos por tópico
+- **Consumer groups configurados**: Evita processamento duplicado
+  - `parser-group`: Parser divide as 3 partições entre instâncias
+  - `classifier-group`: Classifier divide as 3 partições entre instâncias
+  - `db-sync-group`: DB Sync processa todas as mensagens
+  - `indexer-group`: Indexer processa todas as mensagens
+
+### Como Funciona
+
+```
+lawsuit_raw (3 partições)
+  ├─ Partição 0 → parser-1 (parser-group)
+  ├─ Partição 1 → parser-2 (parser-group)
+  └─ Partição 2 → parser-3 (parser-group)
+
+lawsuit_structured (3 partições)
+  ├─ Partição 0 → classifier-1 (classifier-group)
+  ├─ Partição 1 → classifier-2 (classifier-group)
+  └─ Partição 2 → classifier-3 (classifier-group)
+```
+
+### Escalar Serviços
+
+Para escalar `parser` e `classifier` para 3 instâncias:
+
+```bash
+make scale-pipeline
+```
+
+Ou manualmente:
+```bash
+docker compose up -d --scale parser=3 --scale classifier=3
+```
+
+**Importante:**
+- O número máximo de consumidores úteis = número de partições
+- Com 3 partições, você pode ter até 3 instâncias de `parser` e `classifier`
+- Mais instâncias que partições resultarão em consumidores ociosos
+
+### Verificar Distribuição de Partições
+
+Acesse o Kafka Web UI (http://localhost:8081) e verifique:
+- Tópicos com 3 partições cada
+- Consumer groups com múltiplos consumidores
+- Distribuição de partições entre consumidores
 
 ## ⚠️ Troubleshooting
 

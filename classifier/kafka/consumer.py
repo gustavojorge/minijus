@@ -6,6 +6,7 @@ async def create_consumer() -> AIOKafkaConsumer:
     consumer = AIOKafkaConsumer(
         STRUCTURED_TOPIC,
         bootstrap_servers=BOOTSTRAP_SERVERS,
+        group_id="classifier-group",
         value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         enable_auto_commit=True,
         auto_offset_reset="earliest",

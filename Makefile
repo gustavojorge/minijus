@@ -38,9 +38,19 @@ run-data-collection-infra:
 .PHONY: run-infra
 run-infra: run-kafka run-database run-elastic run-data-collection-infra
 
+.PHONY: create-kafka-topics
+create-kafka-topics:
+	@echo "Criando tópicos Kafka com 3 partições..."
+	@./scripts/create-kafka-topics.sh
+
 .PHONY: run-pipeline-apps
 run-pipeline-apps:
 	@$(DOCKER_COMPOSE) up -d parser classifier db_sync
+
+.PHONY: scale-pipeline
+scale-pipeline:
+	@echo "Escalando parser e classifier para 3 instâncias..."
+	@$(DOCKER_COMPOSE) up -d --scale parser=3 --scale classifier=3
 
 .PHONY: run-backend-services
 run-backend-services:
@@ -86,8 +96,10 @@ start-full: build-all run-infra
 	@echo "Iniciando serviços de coleta de dados..."
 	@$(DOCKER_COMPOSE) up -d data_collection-api data_collection_worker
 	@sleep 5
+	@echo "Criando tópicos Kafka com 3 partições..."
+	@./scripts/create-kafka-topics.sh || echo "⚠️  Tópicos podem já existir, continuando..."
 	@echo "Iniciando pipeline..."
-	@$(DOCKER_COMPOSE) up -d parser classifier db_sync
+	@$(DOCKER_COMPOSE) up -d --scale parser=3 --scale classifier=3 parser classifier db_sync
 	@sleep 10
 	@echo "Produzindo mensagem de exemplo..."
 	@$(DOCKER_COMPOSE) up initial-payload-producer

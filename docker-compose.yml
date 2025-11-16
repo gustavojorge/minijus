@@ -169,7 +169,6 @@ services:
       dockerfile: Dockerfile
       args:
         APP_DIR: parser
-    container_name: parser
     command:
       - poetry
       - run
@@ -190,7 +189,6 @@ services:
       dockerfile: Dockerfile
       args:
         APP_DIR: classifier
-    container_name: classifier
     command:
       - poetry
       - run

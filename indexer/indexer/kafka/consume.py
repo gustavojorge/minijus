@@ -12,6 +12,7 @@ async def consume_lawsuits() -> None:
     consumer = AIOKafkaConsumer(
         CLASSIFIED_TOPIC,
         bootstrap_servers=BOOTSTRAP_SERVERS,
+        group_id="indexer-group",
         value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         enable_auto_commit=True,
         auto_offset_reset="earliest",
